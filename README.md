@@ -18,12 +18,16 @@ Locales: English + 简体中文 (`en`, `zh-Hans`).
 
 ## Design tokens
 
-- bg `#0C1612`
-- surface `#15241C`
-- accent `#C8E83A`
-- chalk `#E8E4DC`
-- text `#F4F6F3`
-- muted `#8A9A90`
+Hard Court (dark / light):
+
+| Token | Dark | Light |
+| --- | --- | --- |
+| bg | `#0C1612` | `#F4F6F3` |
+| surface | `#15241C` | `#E8E4DC` |
+| accent | `#C8E83A` | `#C8E83A` |
+| chalk | `#E8E4DC` | `#E8E4DC` |
+| text | `#F4F6F3` | `#0C1612` |
+| muted | `#8A9A90` | `#5A6B60` |
 
 ## Build
 

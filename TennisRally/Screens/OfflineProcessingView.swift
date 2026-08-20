@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OfflineProcessingView: View {
     @EnvironmentObject private var store: AppSessionStore
+    @Environment(\.locale) private var locale
 
     var body: some View {
         ZStack {
@@ -25,7 +26,7 @@ struct OfflineProcessingView: View {
                         .foregroundStyle(HardCourt.accent)
                 }
                 Spacer()
-                Text(String(localized: "process.title"))
+                Text("process.title")
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(HardCourt.text)
                 Spacer()
@@ -57,18 +58,23 @@ struct OfflineProcessingView: View {
                     }
                     .padding(.top, 8)
 
-                    Text(String(localized: "process.detecting"))
+                    Text("process.detecting")
                         .font(.system(size: 17, weight: .medium))
                         .foregroundStyle(HardCourt.text)
-                    Text(String(localized: "process.offline"))
+                    Text("process.offline")
                         .font(.system(size: 14))
                         .foregroundStyle(HardCourt.muted)
-                    Text(String(format: String(localized: "process.clip_progress"), job.detectedClipCount, job.estimatedClipCount))
+                    Text(AppLocalization.format(
+                        "process.clip_progress",
+                        locale: locale,
+                        job.detectedClipCount as CVarArg,
+                        job.estimatedClipCount as CVarArg
+                    ))
                         .font(.system(size: 13))
                         .foregroundStyle(HardCourt.muted)
 
                     HStack(spacing: 12) {
-                        Button(String(localized: "process.cancel")) {
+                        Button("process.cancel") {
                             store.cancelProcessing()
                         }
                         .foregroundStyle(HardCourt.danger)
@@ -77,7 +83,7 @@ struct OfflineProcessingView: View {
                         Button {
                             store.completeProcessing()
                         } label: {
-                            Text(String(localized: "process.demo_finish"))
+                            Text("process.demo_finish")
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundStyle(HardCourt.accent)
                         }
@@ -96,10 +102,10 @@ struct OfflineProcessingView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 88, height: 88)
-            Text(String(localized: "process.idle_title"))
+            Text("process.idle_title")
                 .font(.system(size: 20, weight: .semibold))
                 .foregroundStyle(HardCourt.text)
-            Text(String(localized: "process.idle_body"))
+            Text("process.idle_body")
                 .font(.system(size: 14))
                 .foregroundStyle(HardCourt.muted)
                 .multilineTextAlignment(.center)
@@ -121,7 +127,7 @@ struct OfflineProcessingView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 8)
             } else {
-                Button(String(localized: "tab.library")) {
+                Button("tab.library") {
                     store.selectedTab = .library
                 }
                 .foregroundStyle(HardCourt.accent)

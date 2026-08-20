@@ -14,6 +14,7 @@
 		27DCD49E81102B2F2151751D /* RallyEditingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F513A83ACE22C1FCF820F98F /* RallyEditingTests.swift */; };
 		31408496946F26E4DED9AA3C /* LibraryImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74833D13935FC302193370B3 /* LibraryImportView.swift */; };
 		3B8C1E2A7F904D6E9A12B0C4 /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D4E6A1B2C3F4E5A8B7C6D5E0A /* AppSettingsStore.swift */; };
+		4A5B6C7D8E9F0A1B2C3D4E5F /* AppLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C5 /* AppLocalization.swift */; };
 		5AC321E65132A97E0B9E299A /* ReviewExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7B5BC108BB5D22F0884FE /* ReviewExportView.swift */; };
 		5ED77FE0D6DDD86656AAC328 /* LibraryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A95D90942819C9A687524A /* LibraryModels.swift */; };
 		782F2B5F2D13FE7E4251858D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5ED099E7C3EA0EE6C04A62E2 /* Localizable.strings */; };
@@ -22,6 +23,7 @@
 		A916AFDE9DA1680E376E6FB7 /* TrimTimelineMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F43FC315885126120CB5883 /* TrimTimelineMapper.swift */; };
 		A94B3BBF1375AD75FFB03026 /* HardCourtTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBA2B3EE5E54308FA91F07C /* HardCourtTheme.swift */; };
 		B0C1D2E3F4A5968778695A4B /* AppSettingsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* AppSettingsStoreTests.swift */; };
+		C1D2E3F4A5B69788796A5B4C /* AppLocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B5C6D /* AppLocalizationTests.swift */; };
 		C0FD1C85DA5505E6E67A6CC9 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE514CD4E4CFECD6C89DC16 /* RootTabView.swift */; };
 		C45E7A2AAEFCA1CBD5308733 /* TennisRallyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A44B62E25E6DEE7A43FAFF2 /* TennisRallyApp.swift */; };
 		D722C81D635DC7DCABAA5703 /* CorrectionEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E66AFE339EB40D02FDC5E01 /* CorrectionEditorView.swift */; };
@@ -42,6 +44,7 @@
 		01ADD5A15430011DA1925193 /* TennisRally.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TennisRally.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		145F6DF3B791ADDE85F1E9A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		14ED80534AB44C60F975AD3C /* TennisRallyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TennisRallyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A2B3C4D5E6F708192A3B4C5 /* AppLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalization.swift; sourceTree = "<group>"; };
 		2F43FC315885126120CB5883 /* TrimTimelineMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrimTimelineMapper.swift; sourceTree = "<group>"; };
 		3D4C02B87731609C94D249A0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3F1077BE29FC774467660045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -57,6 +60,7 @@
 		9D4E6A1B2C3F4E5A8B7C6D5E0A /* AppSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStore.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60718293A4B5C /* AppSettingsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStoreTests.swift; sourceTree = "<group>"; };
 		AE3E71B56C7EAF5E1CBB23D6 /* SharedUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUI.swift; sourceTree = "<group>"; };
+		B2C3D4E5F60718293A4B5C6D /* AppLocalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalizationTests.swift; sourceTree = "<group>"; };
 		D32B9056435862D84A07FBC4 /* Rally.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rally.swift; sourceTree = "<group>"; };
 		D4A95D90942819C9A687524A /* LibraryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryModels.swift; sourceTree = "<group>"; };
 		F4EC2D88F5C5A6286D463F5F /* OfflineProcessingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineProcessingView.swift; sourceTree = "<group>"; };
@@ -99,6 +103,7 @@
 		586901AEA756B5CB7EF579E7 /* TennisRallyTests */ = {
 			isa = PBXGroup;
 			children = (
+				B2C3D4E5F60718293A4B5C6D /* AppLocalizationTests.swift */,
 				A1B2C3D4E5F60718293A4B5C /* AppSettingsStoreTests.swift */,
 				F513A83ACE22C1FCF820F98F /* RallyEditingTests.swift */,
 			);
@@ -133,6 +138,7 @@
 		D15DDE67DB59D7EFBFF3A44A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1A2B3C4D5E6F708192A3B4C5 /* AppLocalization.swift */,
 				9D4E6A1B2C3F4E5A8B7C6D5E0A /* AppSettingsStore.swift */,
 				6BD743DE739FD1A99933DDD8 /* AppSessionStore.swift */,
 				D4A95D90942819C9A687524A /* LibraryModels.swift */,
@@ -257,6 +263,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A5B6C7D8E9F0A1B2C3D4E5F /* AppLocalization.swift in Sources */,
 				3B8C1E2A7F904D6E9A12B0C4 /* AppSettingsStore.swift in Sources */,
 				0E92CEB4D8EE601EC317AF4E /* AppSessionStore.swift in Sources */,
 				D722C81D635DC7DCABAA5703 /* CorrectionEditorView.swift in Sources */,
@@ -279,6 +286,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1D2E3F4A5B69788796A5B4C /* AppLocalizationTests.swift in Sources */,
 				B0C1D2E3F4A5968778695A4B /* AppSettingsStoreTests.swift in Sources */,
 				27DCD49E81102B2F2151751D /* RallyEditingTests.swift in Sources */,
 			);

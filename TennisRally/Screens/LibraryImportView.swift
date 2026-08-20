@@ -114,7 +114,7 @@ struct LibraryImportView: View {
     }
 
     private func statusLabel(for video: LibraryVideo) -> String {
-        String(localized: String.LocalizationValue(video.statusLabelKey), locale: settings.language.locale)
+        AppLocalization.text(video.statusLabelKey, locale: settings.language.locale)
     }
 
     private var dropZone: some View {

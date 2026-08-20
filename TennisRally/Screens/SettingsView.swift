@@ -80,9 +80,6 @@ struct SettingsView: View {
             settings.language = language
         } label: {
             HStack(spacing: 12) {
-                RoundedRectangle(cornerRadius: 1.5, style: .continuous)
-                    .fill(selected ? HardCourt.accent : Color.clear)
-                    .frame(width: 3, height: 22)
                 Text(language.displayNameKey)
                     .font(.system(size: 16, weight: selected ? .semibold : .regular))
                     .foregroundStyle(selected ? HardCourt.text : HardCourt.muted)
@@ -93,8 +90,16 @@ struct SettingsView: View {
                         .foregroundStyle(HardCourt.accent)
                 }
             }
+            .padding(.leading, 14)
             .padding(.trailing, 14)
             .padding(.vertical, 14)
+            .background(alignment: .leading) {
+                if selected {
+                    Rectangle()
+                        .fill(HardCourt.accent)
+                        .frame(width: 3)
+                }
+            }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
