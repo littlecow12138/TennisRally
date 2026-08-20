@@ -77,7 +77,7 @@ struct OfflineProcessingView: View {
                         Button {
                             store.completeProcessing()
                         } label: {
-                            Text("Demo finish")
+                            Text(String(localized: "process.demo_finish"))
                                 .font(.system(size: 14, weight: .semibold))
                                 .foregroundStyle(HardCourt.accent)
                         }

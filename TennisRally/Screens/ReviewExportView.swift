@@ -3,6 +3,33 @@ import SwiftUI
 struct ReviewExportView: View {
     @EnvironmentObject private var store: AppSessionStore
     let rally: Rally
+    @State private var exportAlert: ExportStubAlert?
+
+    private enum ExportStubAlert: Identifiable {
+        case exportClip
+        case shareToPhotos
+
+        var id: String {
+            switch self {
+            case .exportClip: return "export"
+            case .shareToPhotos: return "share"
+            }
+        }
+
+        var titleKey: String {
+            switch self {
+            case .exportClip: return "review.export_stub_title"
+            case .shareToPhotos: return "review.share_stub_title"
+            }
+        }
+
+        var messageKey: String {
+            switch self {
+            case .exportClip: return "review.export_stub_body"
+            case .shareToPhotos: return "review.share_stub_body"
+            }
+        }
+    }
 
     private var current: Rally {
         store.rallies.first(where: { $0.id == store.reviewingRallyID }) ?? rally
@@ -20,9 +47,13 @@ struct ReviewExportView: View {
                 videoBlock
                 meta
                 neighborNav
-                PrimaryButton(titleKey: "review.export_clip", systemImage: "square.and.arrow.down") {}
-                    .padding(.horizontal, 20)
-                Button {} label: {
+                PrimaryButton(titleKey: "review.export_clip", systemImage: "square.and.arrow.down") {
+                    exportAlert = .exportClip
+                }
+                .padding(.horizontal, 20)
+                Button {
+                    exportAlert = .shareToPhotos
+                } label: {
                     HStack(spacing: 8) {
                         Image(systemName: "square.and.arrow.up")
                         Text(String(localized: "review.share_photos"))
@@ -33,10 +64,22 @@ struct ReviewExportView: View {
                 Text(String(localized: "review.export_note"))
                     .font(.system(size: 12))
                     .foregroundStyle(HardCourt.muted)
+                Text(String(localized: "review.export_shell_note"))
+                    .font(.system(size: 11))
+                    .foregroundStyle(HardCourt.muted.opacity(0.9))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 28)
                 Spacer(minLength: 0)
             }
             .padding(.top, 8)
             .padding(.bottom, 24)
+        }
+        .alert(item: $exportAlert) { alert in
+            Alert(
+                title: Text(NSLocalizedString(alert.titleKey, comment: "")),
+                message: Text(NSLocalizedString(alert.messageKey, comment: "")),
+                dismissButton: .default(Text(NSLocalizedString("common.ok", comment: "")))
+            )
         }
     }
 

@@ -6,8 +6,8 @@ struct Rally: Identifiable, Equatable, Hashable {
     var start: TimeInterval
     var end: TimeInterval
     var isCorrected: Bool
-    private let originalStart: TimeInterval
-    private let originalEnd: TimeInterval
+    let originalStart: TimeInterval
+    let originalEnd: TimeInterval
 
     init(
         id: UUID = UUID(),

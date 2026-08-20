@@ -15,6 +15,7 @@
 "process.offline" = "Offline • No network needed";
 "process.clip_progress" = "Clip %d of ~%d estimated";
 "process.cancel" = "Cancel";
+"process.demo_finish" = "Demo finish";
 "process.start" = "Start offline split";
 "process.idle_title" = "Ready to process";
 "process.idle_body" = "Import a video from Library, then run offline boundary detection here.";
@@ -38,5 +39,11 @@
 "review.export_clip" = "Export clip";
 "review.share_photos" = "Share to Photos";
 "review.export_note" = "Exports this rally only";
+"review.export_shell_note" = "UI shell: file write / Photos save not wired yet.";
+"review.export_stub_title" = "Export not wired";
+"review.export_stub_body" = "This UI shell shows the export entry point. Writing a clip file lands with MVP media export.";
+"review.share_stub_title" = "Photos save not wired";
+"review.share_stub_body" = "Share to Photos is stubbed here so the CTA is honest until Photos export is implemented.";
 "review.meta" = "%@ · %@ · %@";
 "common.rally" = "Rally %02d";
+"common.ok" = "OK";

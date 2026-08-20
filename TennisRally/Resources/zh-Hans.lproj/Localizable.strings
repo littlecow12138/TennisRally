@@ -15,6 +15,7 @@
 "process.offline" = "离线 · 无需网络";
 "process.clip_progress" = "片段 %d / 约 %d";
 "process.cancel" = "取消";
+"process.demo_finish" = "演示完成";
 "process.start" = "开始离线切分";
 "process.idle_title" = "准备处理";
 "process.idle_body" = "先在片库导入视频，再在此运行离线边界检测。";
@@ -38,5 +39,11 @@
 "review.export_clip" = "导出片段";
 "review.share_photos" = "保存到相册";
 "review.export_note" = "仅导出当前回合";
+"review.export_shell_note" = "UI 壳：写文件 / 保存相册尚未接线。";
+"review.export_stub_title" = "导出尚未接线";
+"review.export_stub_body" = "此 UI 壳展示导出入口。真正写出 clip 文件随 MVP 媒体导出落地。";
+"review.share_stub_title" = "相册保存尚未接线";
+"review.share_stub_body" = "「保存到相册」在此为诚实占位，待 Photos 导出实现后再接通。";
 "review.meta" = "%@ · %@ · %@";
 "common.rally" = "回合 %02d";
+"common.ok" = "好";

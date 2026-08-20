@@ -60,6 +60,34 @@ final class RallyEditingTests: XCTestCase {
     }
 }
 
+final class TrimTimelineMapperTests: XCTestCase {
+    func testMapsEdgesOfWindow() {
+        let mapper = TrimTimelineMapper(windowStart: 40, windowEnd: 60)
+        XCTAssertEqual(mapper.x(for: 40, width: 100), 0, accuracy: 0.001)
+        XCTAssertEqual(mapper.x(for: 60, width: 100), 100, accuracy: 0.001)
+        XCTAssertEqual(mapper.time(atX: 50, width: 100), 50, accuracy: 0.001)
+    }
+
+    func testClampsStartAgainstEndAndWindow() {
+        let mapper = TrimTimelineMapper(windowStart: 40, windowEnd: 60, minimumDuration: 0.5)
+        XCTAssertEqual(mapper.clampedStart(proposed: 30, currentEnd: 58), 40, accuracy: 0.001)
+        XCTAssertEqual(mapper.clampedStart(proposed: 57.8, currentEnd: 58), 57.5, accuracy: 0.001)
+    }
+
+    func testClampsEndAgainstStartAndWindow() {
+        let mapper = TrimTimelineMapper(windowStart: 40, windowEnd: 60, minimumDuration: 0.5)
+        XCTAssertEqual(mapper.clampedEnd(proposed: 70, currentStart: 41), 60, accuracy: 0.001)
+        XCTAssertEqual(mapper.clampedEnd(proposed: 41.2, currentStart: 41), 41.5, accuracy: 0.001)
+    }
+
+    func testBuildsWindowFromOriginalRallyBounds() {
+        let rally = Rally.sample(index: 3, start: 41, end: 58)
+        let mapper = TrimTimelineMapper(rally: rally, padding: 8)
+        XCTAssertEqual(mapper.windowStart, 33, accuracy: 0.001)
+        XCTAssertEqual(mapper.windowEnd, 66, accuracy: 0.001)
+    }
+}
+
 @MainActor
 final class SessionFlowTests: XCTestCase {
     func testImportStartsProcessingAndSwitchesToProcessTab() {
