@@ -2,30 +2,40 @@ import SwiftUI
 
 struct LibraryImportView: View {
     @EnvironmentObject private var store: AppSessionStore
+    @EnvironmentObject private var settings: AppSettingsStore
 
     var body: some View {
-        ZStack {
-            CourtBackdrop()
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    header
-                    PrimaryButton(titleKey: "library.import", systemImage: "square.and.arrow.up") {
-                        store.importDemoVideo(named: "Saturday practice", duration: 724)
-                        store.bumpProcessingProgress(to: 0.62)
-                    }
-
-                    if store.videos.isEmpty {
-                        emptyState
-                    } else {
-                        ForEach(store.videos) { video in
-                            videoRow(video)
+        NavigationStack {
+            ZStack {
+                CourtBackdrop()
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        header
+                        PrimaryButton(titleKey: "library.import", systemImage: "square.and.arrow.up") {
+                            store.importDemoVideo(named: "Saturday practice", duration: 724)
+                            store.bumpProcessingProgress(to: 0.62)
                         }
-                        dropZone
+
+                        if store.videos.isEmpty {
+                            emptyState
+                        } else {
+                            ForEach(store.videos) { video in
+                                videoRow(video)
+                            }
+                            dropZone
+                        }
                     }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 12)
+                    .padding(.bottom, 28)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 12)
-                .padding(.bottom, 28)
+            }
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: LibraryRoute.self) { route in
+                switch route {
+                case .settings:
+                    SettingsView()
+                }
             }
         }
     }
@@ -38,19 +48,20 @@ struct LibraryImportView: View {
                     .scaledToFit()
                     .frame(height: 28)
                     .accessibilityLabel("TennisRally")
-                Text(String(localized: "library.tagline"))
+                Text("library.tagline")
                     .font(.system(size: 15))
                     .foregroundStyle(HardCourt.muted)
             }
             Spacer()
-            HStack(spacing: 6) {
-                Image(systemName: "icloud.slash")
-                    .font(.system(size: 12, weight: .medium))
-                Text(String(localized: "library.works_offline"))
-                    .font(.system(size: 12, weight: .medium))
+            NavigationLink(value: LibraryRoute.settings) {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(HardCourt.muted)
+                    .frame(width: 36, height: 36)
+                    .contentShape(Rectangle())
             }
-            .foregroundStyle(HardCourt.muted)
-            .padding(.top, 4)
+            .accessibilityLabel(Text("settings.title"))
+            .padding(.top, 2)
         }
     }
 
@@ -87,7 +98,7 @@ struct LibraryImportView: View {
                     Text(video.title)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(HardCourt.text)
-                    Text("\(video.durationLabel) • \(NSLocalizedString(video.statusLabelKey, comment: ""))")
+                    Text("\(video.durationLabel) • \(statusLabel(for: video))")
                         .font(.system(size: 13))
                         .foregroundStyle(HardCourt.muted)
                 }
@@ -102,12 +113,16 @@ struct LibraryImportView: View {
         .buttonStyle(.plain)
     }
 
+    private func statusLabel(for video: LibraryVideo) -> String {
+        AppLocalization.text(video.statusLabelKey, locale: settings.language.locale)
+    }
+
     private var dropZone: some View {
         VStack(spacing: 10) {
             Image(systemName: "photo.on.rectangle.angled")
                 .font(.system(size: 28))
                 .foregroundStyle(HardCourt.muted)
-            Text(String(localized: "library.drop_hint"))
+            Text("library.drop_hint")
                 .font(.system(size: 14))
                 .foregroundStyle(HardCourt.muted)
         }
@@ -126,10 +141,10 @@ struct LibraryImportView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 96, height: 96)
-            Text(String(localized: "library.empty_title"))
+            Text("library.empty_title")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(HardCourt.text)
-            Text(String(localized: "library.empty_body"))
+            Text("library.empty_body")
                 .font(.system(size: 14))
                 .foregroundStyle(HardCourt.muted)
                 .multilineTextAlignment(.center)

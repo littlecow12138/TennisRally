@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CorrectionEditorView: View {
     @EnvironmentObject private var store: AppSessionStore
+    @Environment(\.locale) private var locale
     @State private var draft: Rally
     @State private var playhead: TimeInterval
     @State private var mapper: TrimTimelineMapper
@@ -24,7 +25,7 @@ struct CorrectionEditorView: View {
                 timelineVisual
                 boundReadout
                 actions
-                Text(String(localized: "correction.hint"))
+                Text("correction.hint")
                     .font(.system(size: 13))
                     .foregroundStyle(HardCourt.muted)
                     .padding(.top, 4)
@@ -43,16 +44,16 @@ struct CorrectionEditorView: View {
 
     private var nav: some View {
         HStack {
-            Button(String(localized: "correction.cancel")) {
+            Button("correction.cancel") {
                 store.showCorrection = false
             }
             .foregroundStyle(HardCourt.text)
             Spacer()
-            Text(String(format: String(localized: "common.rally"), draft.index))
+            Text(AppLocalization.format("common.rally", locale: locale, draft.index as CVarArg))
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(HardCourt.text)
             Spacer()
-            Button(String(localized: "correction.done")) {
+            Button("correction.done") {
                 store.applyEditedRally(draft)
             }
             .font(.system(size: 17, weight: .semibold))
@@ -104,7 +105,6 @@ struct CorrectionEditorView: View {
                 .padding(.horizontal, 12)
                 .allowsHitTesting(false)
 
-                // Playhead (between handles)
                 Rectangle()
                     .fill(HardCourt.text)
                     .frame(width: 2, height: 52)
@@ -139,7 +139,7 @@ struct CorrectionEditorView: View {
     }
 
     private func draggableHandle(
-        labelKey: String,
+        labelKey: LocalizedStringKey,
         x: Double,
         width: Double,
         originTime: TimeInterval,
@@ -161,10 +161,10 @@ struct CorrectionEditorView: View {
                         activeHandleDragOrigin = nil
                     }
             )
-            .accessibilityLabel(Text(NSLocalizedString(labelKey, comment: "")))
+            .accessibilityLabel(Text(labelKey))
     }
 
-    private func handleLabel(_ key: String) -> some View {
+    private func handleLabel(_ key: LocalizedStringKey) -> some View {
         VStack(spacing: 2) {
             Image(systemName: "chevron.up")
                 .font(.system(size: 10, weight: .bold))
@@ -179,7 +179,7 @@ struct CorrectionEditorView: View {
                         }
                     }
                 }
-            Text(NSLocalizedString(key, comment: ""))
+            Text(key)
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(HardCourt.accent)
         }
@@ -190,7 +190,7 @@ struct CorrectionEditorView: View {
     private var boundReadout: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text(String(localized: "correction.start"))
+                Text("correction.start")
                     .font(.caption)
                     .foregroundStyle(HardCourt.muted)
                 Text(Rally.formatClock(draft.start))
@@ -199,7 +199,7 @@ struct CorrectionEditorView: View {
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
-                Text(String(localized: "correction.end"))
+                Text("correction.end")
                     .font(.caption)
                     .foregroundStyle(HardCourt.muted)
                 Text(Rally.formatClock(draft.end))
@@ -232,12 +232,12 @@ struct CorrectionEditorView: View {
         .padding(.horizontal, 8)
     }
 
-    private func actionButton(titleKey: String, systemImage: String, action: @escaping () -> Void) -> some View {
+    private func actionButton(titleKey: LocalizedStringKey, systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             VStack(spacing: 8) {
                 Image(systemName: systemImage)
                     .font(.system(size: 18, weight: .semibold))
-                Text(NSLocalizedString(titleKey, comment: ""))
+                Text(titleKey)
                     .font(.system(size: 12, weight: .medium))
                     .multilineTextAlignment(.center)
             }

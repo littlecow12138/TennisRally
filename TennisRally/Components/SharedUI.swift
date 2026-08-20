@@ -1,15 +1,13 @@
 import SwiftUI
 
 struct CourtBackdrop: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         ZStack {
             HardCourt.bg
             LinearGradient(
-                colors: [
-                    Color(red: 0.10, green: 0.22, blue: 0.14).opacity(0.55),
-                    HardCourt.bg.opacity(0.2),
-                    HardCourt.bg
-                ],
+                colors: gradientColors,
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -26,10 +24,25 @@ struct CourtBackdrop: View {
                     path.move(to: CGPoint(x: w * 0.5, y: h * 0.18))
                     path.addLine(to: CGPoint(x: w * 0.5, y: h * 0.72))
                 }
-                .stroke(HardCourt.chalk.opacity(0.08), lineWidth: 1)
+                .stroke(HardCourt.courtLine, lineWidth: 1)
             }
         }
         .ignoresSafeArea()
+    }
+
+    private var gradientColors: [Color] {
+        if colorScheme == .dark {
+            return [
+                Color(red: 0.10, green: 0.22, blue: 0.14).opacity(0.55),
+                HardCourt.bg.opacity(0.2),
+                HardCourt.bg
+            ]
+        }
+        return [
+            Color(red: 0.91, green: 0.93, blue: 0.90).opacity(0.7),
+            HardCourt.bg.opacity(0.35),
+            HardCourt.bg
+        ]
     }
 }
 
