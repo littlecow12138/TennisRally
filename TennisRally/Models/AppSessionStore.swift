@@ -12,8 +12,11 @@ final class AppSessionStore: ObservableObject {
     @Published var reviewingRallyID: UUID?
     @Published var showCorrection = false
     @Published var showReview = false
+    @Published var alertMessage: String?
 
-    init(seedDemoData: Bool = true) {
+    private var processingTask: Task<Void, Never>?
+
+    init(seedDemoData: Bool = false) {
         if seedDemoData {
             let video = LibraryVideo(
                 id: UUID(uuidString: "11111111-1111-1111-1111-111111111111")!,
@@ -39,6 +42,32 @@ final class AppSessionStore: ObservableObject {
         rallies.first { $0.id == reviewingRallyID }
     }
 
+    // MARK: - Import
+
+    func importVideo(from sourceURL: URL, displayName: String? = nil) {
+        do {
+            let stored = try Self.copyIntoDocuments(sourceURL: sourceURL, preferredName: displayName)
+            let title = displayName.map { Self.stripExtension($0) }
+                ?? Self.stripExtension(sourceURL.lastPathComponent)
+            let video = LibraryVideo(
+                id: UUID(),
+                title: title,
+                duration: 0,
+                status: .notProcessed,
+                filename: stored.lastPathComponent,
+                localURL: stored,
+                lastErrorMessage: nil
+            )
+            videos.insert(video, at: 0)
+            activeVideoID = video.id
+            rallies = []
+            startProcessing(for: video.id)
+        } catch {
+            alertMessage = String(localized: "error.decode_failed")
+        }
+    }
+
+    /// Legacy demo helper used by unit tests.
     func importDemoVideo(named title: String, duration: TimeInterval) {
         let video = LibraryVideo(
             id: UUID(),
@@ -54,15 +83,71 @@ final class AppSessionStore: ObservableObject {
             filename: video.filename,
             progress: 0.12,
             estimatedClipCount: 18,
-            detectedClipCount: 2
+            detectedClipCount: 2,
+            statusMessageKey: "process.detecting"
         )
         selectedTab = .process
+    }
+
+    // MARK: - Processing
+
+    func startProcessing(for videoID: UUID? = nil) {
+        let id = videoID ?? activeVideoID
+        guard let id,
+              let index = videos.firstIndex(where: { $0.id == id }),
+              let url = videos[index].localURL else {
+            alertMessage = String(localized: "error.decode_failed")
+            return
+        }
+
+        processingTask?.cancel()
+        videos[index].status = .processing
+        videos[index].lastErrorMessage = nil
+        activeVideoID = id
+        rallies = []
+        processing = ProcessingState(
+            videoID: id,
+            filename: videos[index].filename,
+            progress: 0.05,
+            estimatedClipCount: 12,
+            detectedClipCount: 0,
+            statusMessageKey: "process.detecting"
+        )
+        selectedTab = .process
+
+        let filename = videos[index].filename
+        processingTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let result = try await RallySegmentationService.segmentVideo(at: url) { [weak self] value in
+                    Task { @MainActor in
+                        self?.bumpProcessingProgress(to: value)
+                    }
+                }
+                guard !Task.isCancelled else { return }
+                await MainActor.run {
+                    self.finishProcessing(
+                        videoID: id,
+                        duration: result.duration,
+                        segments: result.segments,
+                        filename: filename
+                    )
+                }
+            } catch {
+                guard !Task.isCancelled else { return }
+                let mapped = RallySegmentationError.from(error)
+                await MainActor.run {
+                    self.failProcessing(videoID: id, error: mapped)
+                }
+            }
+        }
     }
 
     func bumpProcessingProgress(to value: Double) {
         guard var job = processing else { return }
         job.progress = min(1, max(0, value))
-        job.detectedClipCount = max(1, Int((job.progress * Double(job.estimatedClipCount)).rounded()))
+        let estimated = max(job.estimatedClipCount, 1)
+        job.detectedClipCount = max(job.detectedClipCount, Int((job.progress * Double(estimated) * 0.85).rounded()))
         processing = job
         if let index = videos.firstIndex(where: { $0.id == job.videoID }) {
             videos[index].status = .processing
@@ -80,6 +165,8 @@ final class AppSessionStore: ObservableObject {
     }
 
     func cancelProcessing() {
+        processingTask?.cancel()
+        processingTask = nil
         if let job = processing,
            let index = videos.firstIndex(where: { $0.id == job.videoID }) {
             videos[index].status = .notProcessed
@@ -88,6 +175,46 @@ final class AppSessionStore: ObservableObject {
         rallies = []
         selectedTab = .library
     }
+
+    private func finishProcessing(
+        videoID: UUID,
+        duration: TimeInterval,
+        segments: [OnsetRallySegmenter.Segment],
+        filename: String
+    ) {
+        if let index = videos.firstIndex(where: { $0.id == videoID }) {
+            videos[index].status = .processed
+            videos[index].duration = duration
+            videos[index].lastErrorMessage = nil
+        }
+        rallies = segments.enumerated().map { idx, seg in
+            Rally(index: idx + 1, start: seg.start, end: seg.end)
+        }
+        processing = ProcessingState(
+            videoID: videoID,
+            filename: filename,
+            progress: 1,
+            estimatedClipCount: segments.count,
+            detectedClipCount: segments.count,
+            statusMessageKey: "process.detecting"
+        )
+        processing = nil
+        selectedTab = .rallies
+    }
+
+    private func failProcessing(videoID: UUID, error: RallySegmentationError) {
+        let message = error.localizedDescription
+        if let index = videos.firstIndex(where: { $0.id == videoID }) {
+            videos[index].status = .failed
+            videos[index].lastErrorMessage = message
+        }
+        processing = nil
+        rallies = []
+        alertMessage = message
+        selectedTab = .library
+    }
+
+    // MARK: - Editing
 
     func openCorrection(for rally: Rally) {
         editingRallyID = rally.id
@@ -161,5 +288,34 @@ final class AppSessionStore: ObservableObject {
             cursor = end + 6
         }
         return result
+    }
+
+    private static func stripExtension(_ name: String) -> String {
+        (name as NSString).deletingPathExtension
+    }
+
+    private static func copyIntoDocuments(sourceURL: URL, preferredName: String?) throws -> URL {
+        let accessing = sourceURL.startAccessingSecurityScopedResource()
+        defer {
+            if accessing {
+                sourceURL.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let imports = docs.appendingPathComponent("Imports", isDirectory: true)
+        try FileManager.default.createDirectory(at: imports, withIntermediateDirectories: true)
+
+        let base = preferredName ?? sourceURL.lastPathComponent
+        let ext = sourceURL.pathExtension.isEmpty ? "mov" : sourceURL.pathExtension
+        let stem = stripExtension(base)
+        let destName = "\(stem)-\(UUID().uuidString.prefix(8)).\(ext)"
+        let dest = imports.appendingPathComponent(destName)
+
+        if FileManager.default.fileExists(atPath: dest.path) {
+            try FileManager.default.removeItem(at: dest)
+        }
+        try FileManager.default.copyItem(at: sourceURL, to: dest)
+        return dest
     }
 }

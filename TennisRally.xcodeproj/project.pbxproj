@@ -8,21 +8,26 @@
 
 /* Begin PBXBuildFile section */
 		004D72A7B3B61FE09DFBDACF /* SharedUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E71B56C7EAF5E1CBB23D6 /* SharedUI.swift */; };
+		08D0097480A03512E5D31354 /* OnsetRallySegmenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80BF8B40FEF4017A2EAC022 /* OnsetRallySegmenter.swift */; };
 		0E92CEB4D8EE601EC317AF4E /* AppSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD743DE739FD1A99933DDD8 /* AppSessionStore.swift */; };
 		1F20DF17AA23674B3D7E6DAC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F1077BE29FC774467660045 /* Assets.xcassets */; };
 		26FA404F949D526CA4C65844 /* RallyTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8AC706B6B741DC4BFF4D7CB /* RallyTimelineView.swift */; };
 		27DCD49E81102B2F2151751D /* RallyEditingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F513A83ACE22C1FCF820F98F /* RallyEditingTests.swift */; };
 		31408496946F26E4DED9AA3C /* LibraryImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74833D13935FC302193370B3 /* LibraryImportView.swift */; };
+		36E13FF67E14043A09F5EABE /* IMG_4257_2_first120s.wav in Resources */ = {isa = PBXBuildFile; fileRef = 16FD24F373D293FE1F6BF7B1 /* IMG_4257_2_first120s.wav */; };
 		5AC321E65132A97E0B9E299A /* ReviewExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7B5BC108BB5D22F0884FE /* ReviewExportView.swift */; };
 		5ED77FE0D6DDD86656AAC328 /* LibraryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A95D90942819C9A687524A /* LibraryModels.swift */; };
 		782F2B5F2D13FE7E4251858D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5ED099E7C3EA0EE6C04A62E2 /* Localizable.strings */; };
+		7947B1ED94E7662586961F03 /* OnsetRallySegmenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D086C97275CFEDB14D40E2 /* OnsetRallySegmenterTests.swift */; };
 		864A471286DCA3F526CF859A /* OfflineProcessingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EC2D88F5C5A6286D463F5F /* OfflineProcessingView.swift */; };
+		9033C61A2E9F90642EFCB98C /* RallySegmentationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2A0ADD33B1ABDF55DCCB2F /* RallySegmentationService.swift */; };
 		A916AFDE9DA1680E376E6FB7 /* TrimTimelineMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F43FC315885126120CB5883 /* TrimTimelineMapper.swift */; };
 		A94B3BBF1375AD75FFB03026 /* HardCourtTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBA2B3EE5E54308FA91F07C /* HardCourtTheme.swift */; };
 		C0FD1C85DA5505E6E67A6CC9 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE514CD4E4CFECD6C89DC16 /* RootTabView.swift */; };
 		C45E7A2AAEFCA1CBD5308733 /* TennisRallyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A44B62E25E6DEE7A43FAFF2 /* TennisRallyApp.swift */; };
 		D722C81D635DC7DCABAA5703 /* CorrectionEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E66AFE339EB40D02FDC5E01 /* CorrectionEditorView.swift */; };
 		DB46313B9FF19F4CD193759C /* Rally.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B9056435862D84A07FBC4 /* Rally.swift */; };
+		EBC7A2C80C81A99FDB92758A /* VideoAudioExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3FD696CA5EFCE17F2C426D /* VideoAudioExtractor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,9 +42,13 @@
 
 /* Begin PBXFileReference section */
 		01ADD5A15430011DA1925193 /* TennisRally.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TennisRally.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		11D086C97275CFEDB14D40E2 /* OnsetRallySegmenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnsetRallySegmenterTests.swift; sourceTree = "<group>"; };
 		145F6DF3B791ADDE85F1E9A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		14ED80534AB44C60F975AD3C /* TennisRallyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TennisRallyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		16FD24F373D293FE1F6BF7B1 /* IMG_4257_2_first120s.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = IMG_4257_2_first120s.wav; sourceTree = "<group>"; };
+		1B2A0ADD33B1ABDF55DCCB2F /* RallySegmentationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallySegmentationService.swift; sourceTree = "<group>"; };
 		2F43FC315885126120CB5883 /* TrimTimelineMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrimTimelineMapper.swift; sourceTree = "<group>"; };
+		3B3FD696CA5EFCE17F2C426D /* VideoAudioExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAudioExtractor.swift; sourceTree = "<group>"; };
 		3D4C02B87731609C94D249A0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3F1077BE29FC774467660045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4BE514CD4E4CFECD6C89DC16 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
@@ -53,6 +62,7 @@
 		AE3E71B56C7EAF5E1CBB23D6 /* SharedUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUI.swift; sourceTree = "<group>"; };
 		D32B9056435862D84A07FBC4 /* Rally.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rally.swift; sourceTree = "<group>"; };
 		D4A95D90942819C9A687524A /* LibraryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryModels.swift; sourceTree = "<group>"; };
+		E80BF8B40FEF4017A2EAC022 /* OnsetRallySegmenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnsetRallySegmenter.swift; sourceTree = "<group>"; };
 		F4EC2D88F5C5A6286D463F5F /* OfflineProcessingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineProcessingView.swift; sourceTree = "<group>"; };
 		F513A83ACE22C1FCF820F98F /* RallyEditingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallyEditingTests.swift; sourceTree = "<group>"; };
 		F8AC706B6B741DC4BFF4D7CB /* RallyTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallyTimelineView.swift; sourceTree = "<group>"; };
@@ -92,7 +102,9 @@
 		586901AEA756B5CB7EF579E7 /* TennisRallyTests */ = {
 			isa = PBXGroup;
 			children = (
+				11D086C97275CFEDB14D40E2 /* OnsetRallySegmenterTests.swift */,
 				F513A83ACE22C1FCF820F98F /* RallyEditingTests.swift */,
+				965F76E973C7B6AAEC8D0A01 /* Fixtures */,
 			);
 			path = TennisRallyTests;
 			sourceTree = "<group>";
@@ -112,6 +124,24 @@
 				5ED099E7C3EA0EE6C04A62E2 /* Localizable.strings */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		963FB25295F286AA702BEBE4 /* Segmentation */ = {
+			isa = PBXGroup;
+			children = (
+				E80BF8B40FEF4017A2EAC022 /* OnsetRallySegmenter.swift */,
+				1B2A0ADD33B1ABDF55DCCB2F /* RallySegmentationService.swift */,
+				3B3FD696CA5EFCE17F2C426D /* VideoAudioExtractor.swift */,
+			);
+			path = Segmentation;
+			sourceTree = "<group>";
+		};
+		965F76E973C7B6AAEC8D0A01 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				16FD24F373D293FE1F6BF7B1 /* IMG_4257_2_first120s.wav */,
+			);
+			path = Fixtures;
 			sourceTree = "<group>";
 		};
 		C3F6BD651E4DC75154228756 /* Theme */ = {
@@ -151,6 +181,7 @@
 				D15DDE67DB59D7EFBFF3A44A /* Models */,
 				6E582E96F35654B9F4A8F157 /* Resources */,
 				2342A441463FC1B90E5A5421 /* Screens */,
+				963FB25295F286AA702BEBE4 /* Segmentation */,
 				C3F6BD651E4DC75154228756 /* Theme */,
 			);
 			path = TennisRally;
@@ -164,6 +195,7 @@
 			buildConfigurationList = 1516D11DBAFF0895E6314DB0 /* Build configuration list for PBXNativeTarget "TennisRallyTests" */;
 			buildPhases = (
 				E8831B9D0194BC9033679118 /* Sources */,
+				F249F56EA43C528338D51E01 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -241,6 +273,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F249F56EA43C528338D51E01 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36E13FF67E14043A09F5EABE /* IMG_4257_2_first120s.wav in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -254,13 +294,16 @@
 				31408496946F26E4DED9AA3C /* LibraryImportView.swift in Sources */,
 				5ED77FE0D6DDD86656AAC328 /* LibraryModels.swift in Sources */,
 				864A471286DCA3F526CF859A /* OfflineProcessingView.swift in Sources */,
+				08D0097480A03512E5D31354 /* OnsetRallySegmenter.swift in Sources */,
 				DB46313B9FF19F4CD193759C /* Rally.swift in Sources */,
+				9033C61A2E9F90642EFCB98C /* RallySegmentationService.swift in Sources */,
 				26FA404F949D526CA4C65844 /* RallyTimelineView.swift in Sources */,
 				5AC321E65132A97E0B9E299A /* ReviewExportView.swift in Sources */,
 				C0FD1C85DA5505E6E67A6CC9 /* RootTabView.swift in Sources */,
 				004D72A7B3B61FE09DFBDACF /* SharedUI.swift in Sources */,
 				C45E7A2AAEFCA1CBD5308733 /* TennisRallyApp.swift in Sources */,
 				A916AFDE9DA1680E376E6FB7 /* TrimTimelineMapper.swift in Sources */,
+				EBC7A2C80C81A99FDB92758A /* VideoAudioExtractor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,6 +311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7947B1ED94E7662586961F03 /* OnsetRallySegmenterTests.swift in Sources */,
 				27DCD49E81102B2F2151751D /* RallyEditingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,7 +447,9 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TennisRally/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TennisRally;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Import tennis practice videos to split into rallies offline.";
+				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -425,7 +471,9 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TennisRally/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = TennisRally;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Import tennis practice videos to split into rallies offline.";
+				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (

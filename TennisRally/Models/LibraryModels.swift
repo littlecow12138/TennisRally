@@ -4,6 +4,7 @@ enum LibraryStatus: String, Equatable {
     case notProcessed
     case processing
     case processed
+    case failed
 }
 
 struct LibraryVideo: Identifiable, Equatable {
@@ -12,6 +13,9 @@ struct LibraryVideo: Identifiable, Equatable {
     var duration: TimeInterval
     var status: LibraryStatus
     var filename: String
+    /// Local bookmark/file URL copied into app sandbox for offline processing.
+    var localURL: URL?
+    var lastErrorMessage: String?
 
     var durationLabel: String {
         let total = Int(duration.rounded())
@@ -25,6 +29,7 @@ struct LibraryVideo: Identifiable, Equatable {
         case .notProcessed: return "status.not_processed"
         case .processing: return "status.processing"
         case .processed: return "status.processed"
+        case .failed: return "status.failed"
         }
     }
 }
@@ -35,6 +40,7 @@ struct ProcessingState: Equatable {
     var progress: Double
     var estimatedClipCount: Int
     var detectedClipCount: Int
+    var statusMessageKey: String
 
     var progressPercent: Int {
         Int((progress * 100).rounded())
