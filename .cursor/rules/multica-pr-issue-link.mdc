@@ -1,0 +1,16 @@
+---
+description: Require Multica issue key on every GitHub PR (title + Closes)
+alwaysApply: true
+---
+
+# Multica PR ↔ issue linking
+
+Standing squad rule for this repo:
+
+1. Every code PR **must** link its Multica issue.
+2. Put `LCOW-N` (or the workspace issue key) in the **PR title**.
+3. Put `Closes LCOW-N` in the **PR body** (closing keyword immediately adjacent to the key).
+4. Prefer the key in the **branch name** as well.
+5. If Multica `issue pull-requests` would show nothing for the issue, **do not open/merge** until the link contract is satisfied in title/body/branch — and escalate if GitHub→Multica webhook/integration is missing (repo hooks empty ≠ agent can invent a link).
+
+See `.github/pull_request_template.md` and `CONTRIBUTING.md`.

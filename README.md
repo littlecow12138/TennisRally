@@ -38,3 +38,7 @@ Open `TennisRally.xcodeproj` in Xcode if you prefer the GUI.
 
 - v1 UI shell uses demo session data; real Photos import + ML boundary detection land with the PoC/MVP follow-ups.
 - Processing → Rallies flow is wired end-to-end in the session store for reviewable navigation.
+
+## Contributing
+
+PRs must link a Multica issue (`LCOW-N` in the title + `Closes LCOW-N` in the body). See [CONTRIBUTING.md](CONTRIBUTING.md).
