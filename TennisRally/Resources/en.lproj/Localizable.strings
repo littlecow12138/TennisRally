@@ -90,6 +90,7 @@
 "ai.model.privacy" = "Privacy";
 "ai.model.local_only" = "Local only";
 "ai.model.download" = "Download model";
+"ai.model.redownload" = "Redownload model";
 "ai.model.cellular_warning" = "Download uses cellular data if Wi-Fi is unavailable.";
 "ai.model.cancel" = "Cancel";
 "ai.model.ready_badge" = "Ready";
@@ -114,9 +115,11 @@
 "ai.verdict.looks_good" = "Looks good";
 "ai.verdict.needs_review" = "Needs review";
 "ai.verdict.unclear" = "Unclear";
-"ai.verdict.reason.looks_good" = "Clip length and rhythm look like a complete rally.";
+"ai.verdict.reason.looks_good" = "On-device vision sees a rally/point in play.";
 "ai.verdict.reason.needs_review" = "Clip may include walk-on or cut mid-point. Confirm start/end.";
 "ai.verdict.reason.unclear" = "Boundary confidence is low. Open the editor to verify.";
+"ai.verdict.reason.no_video" = "No local video file available for on-device vision check.";
+"ai.verdict.reason.inference_failed" = "On-device vision could not finish this clip. Try again or open the editor.";
 "ai.verdict.open_editor" = "Open editor";
 "ai.verdict.dismiss" = "Dismiss verdict";
 "ai.confidence.label" = "Confidence";

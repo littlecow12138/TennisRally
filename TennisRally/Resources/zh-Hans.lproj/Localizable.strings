@@ -90,6 +90,7 @@
 "ai.model.privacy" = "隐私";
 "ai.model.local_only" = "仅本机";
 "ai.model.download" = "下载模型";
+"ai.model.redownload" = "重新下载模型";
 "ai.model.cellular_warning" = "若无 Wi-Fi，下载将使用蜂窝数据。";
 "ai.model.cancel" = "取消";
 "ai.model.ready_badge" = "已就绪";
@@ -114,9 +115,11 @@
 "ai.verdict.looks_good" = "看起来正确";
 "ai.verdict.needs_review" = "需复查";
 "ai.verdict.unclear" = "不确定";
-"ai.verdict.reason.looks_good" = "片段时长与节奏看起来像完整回合。";
+"ai.verdict.reason.looks_good" = "本机视觉判断画面像正在进行的回合。";
 "ai.verdict.reason.needs_review" = "片段可能含走位或切在回合中途。请确认起止。";
 "ai.verdict.reason.unclear" = "边界置信度较低。请打开编辑器核对。";
+"ai.verdict.reason.no_video" = "没有可用于本机视觉校验的本地视频文件。";
+"ai.verdict.reason.inference_failed" = "本机视觉未能完成本段校验。请重试或打开编辑器。";
 "ai.verdict.open_editor" = "打开编辑器";
 "ai.verdict.dismiss" = "忽略结论";
 "ai.confidence.label" = "置信度";

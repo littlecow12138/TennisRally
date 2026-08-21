@@ -4,13 +4,18 @@ import UIKit
 #endif
 
 @MainActor
-final class VisionModelStore: ObservableObject, VisionModelReadiness {
+final class VisionModelStore: ObservableObject, VisionModelLocating {
     enum Keys {
         static let readyFlag = "ai.vision_model.ready"
     }
 
     let catalog: VisionModelCatalog
-    let modelFileURL: URL
+    let modelsDirectory: URL
+    let llmModelURL: URL
+    let mmprojModelURL: URL
+
+    /// Primary GGUF path (LLM). Kept for existing call sites / tests.
+    var modelFileURL: URL { llmModelURL }
 
     @Published private(set) var status: VisionModelStatus
 
@@ -58,9 +63,14 @@ final class VisionModelStore: ObservableObject, VisionModelReadiness {
             ?? fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("VisionModels", isDirectory: true)
         try? fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
-        modelFileURL = directory.appendingPathComponent(catalog.fileName)
+        self.modelsDirectory = directory
+        llmModelURL = directory.appendingPathComponent(catalog.llmFileName)
+        mmprojModelURL = directory.appendingPathComponent(catalog.mmprojFileName)
 
-        if fileManager.fileExists(atPath: modelFileURL.path) {
+        let ready = catalog.artifacts.allSatisfy { artifact in
+            fileManager.fileExists(atPath: directory.appendingPathComponent(artifact.fileName).path)
+        }
+        if ready {
             status = .ready
             defaults.set(true, forKey: Keys.readyFlag)
         } else {
@@ -71,7 +81,7 @@ final class VisionModelStore: ObservableObject, VisionModelReadiness {
 
     func startDownload() async {
         guard !status.isDownloading else { return }
-        if fileManager.fileExists(atPath: modelFileURL.path) {
+        if filesPresentOnDisk() {
             status = .ready
             defaults.set(true, forKey: Keys.readyFlag)
             return
@@ -80,38 +90,55 @@ final class VisionModelStore: ObservableObject, VisionModelReadiness {
         status = .downloading(progress: 0, downloadedBytes: 0, totalBytes: catalog.approximateBytes)
         idleTimerController.setIdleTimerDisabled(true)
 
-        let destination = modelFileURL
-        let remote = catalog.remoteURL
         downloadTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let partial = destination.appendingPathExtension("partial")
-                try? self.fileManager.removeItem(at: partial)
-                try await self.downloader.download(from: remote, to: partial) { [weak self] downloaded, total in
-                    Task { @MainActor in
-                        guard let self else { return }
-                        guard case .downloading = self.status else { return }
-                        let expected = total > 0 ? total : self.catalog.approximateBytes
-                        let fraction = expected > 0 ? Double(downloaded) / Double(expected) : 0
-                        self.status = .downloading(
-                            progress: min(0.99, max(0, fraction)),
-                            downloadedBytes: downloaded,
-                            totalBytes: expected
-                        )
+                var completedBytes: Int64 = 0
+                let artifactCount = max(self.catalog.artifacts.count, 1)
+                for (index, artifact) in self.catalog.artifacts.enumerated() {
+                    let destination = self.modelsDirectory.appendingPathComponent(artifact.fileName)
+                    if self.fileManager.fileExists(atPath: destination.path) {
+                        completedBytes += self.catalog.approximateBytes / Int64(artifactCount)
+                        continue
                     }
+                    let partial = destination.appendingPathExtension("partial")
+                    try? self.fileManager.removeItem(at: partial)
+                    let baseCompleted = completedBytes
+                    try await self.downloader.download(from: artifact.remoteURL, to: partial) { [weak self] downloaded, total in
+                        Task { @MainActor in
+                            guard let self else { return }
+                            guard case .downloading = self.status else { return }
+                            let artifactExpected = total > 0 ? total : (self.catalog.approximateBytes / Int64(artifactCount))
+                            let overallExpected = self.catalog.approximateBytes
+                            let overallDownloaded = baseCompleted + downloaded
+                            let fraction = overallExpected > 0
+                                ? Double(overallDownloaded) / Double(overallExpected)
+                                : (Double(index) + Double(downloaded) / Double(max(artifactExpected, 1))) / Double(artifactCount)
+                            self.status = .downloading(
+                                progress: min(0.99, max(0, fraction)),
+                                downloadedBytes: overallDownloaded,
+                                totalBytes: overallExpected
+                            )
+                        }
+                    }
+                    try? self.fileManager.removeItem(at: destination)
+                    try self.fileManager.moveItem(at: partial, to: destination)
+                    let artifactBytes = (try? self.fileManager.attributesOfItem(atPath: destination.path)[.size] as? NSNumber)?.int64Value
+                        ?? (self.catalog.approximateBytes / Int64(artifactCount))
+                    completedBytes += artifactBytes
                 }
-                try? self.fileManager.removeItem(at: destination)
-                try self.fileManager.moveItem(at: partial, to: destination)
                 self.status = .ready
                 self.defaults.set(true, forKey: Keys.readyFlag)
             } catch is CancellationError {
-                try? self.fileManager.removeItem(at: destination.appendingPathExtension("partial"))
-                try? self.fileManager.removeItem(at: destination)
-                self.status = .notDownloaded
-                self.defaults.set(false, forKey: Keys.readyFlag)
+                self.cleanupPartials()
+                if !self.filesPresentOnDisk() {
+                    self.removeModelFiles()
+                    self.status = .notDownloaded
+                    self.defaults.set(false, forKey: Keys.readyFlag)
+                }
             } catch {
-                try? self.fileManager.removeItem(at: destination.appendingPathExtension("partial"))
-                try? self.fileManager.removeItem(at: destination)
+                self.cleanupPartials()
+                self.removeModelFiles()
                 self.status = .failed(message: error.localizedDescription)
                 self.defaults.set(false, forKey: Keys.readyFlag)
             }
@@ -127,19 +154,46 @@ final class VisionModelStore: ObservableObject, VisionModelReadiness {
         downloader.cancel()
         downloadTask?.cancel()
         await downloadTask?.value
-        try? fileManager.removeItem(at: modelFileURL.appendingPathExtension("partial"))
-        try? fileManager.removeItem(at: modelFileURL)
-        status = .notDownloaded
-        defaults.set(false, forKey: Keys.readyFlag)
+        cleanupPartials()
+        if !filesPresentOnDisk() {
+            removeModelFiles()
+            status = .notDownloaded
+            defaults.set(false, forKey: Keys.readyFlag)
+        }
         idleTimerController.setIdleTimerDisabled(false)
     }
 
     func removeModel() {
         guard !status.isDownloading else { return }
-        try? fileManager.removeItem(at: modelFileURL)
-        try? fileManager.removeItem(at: modelFileURL.appendingPathExtension("partial"))
+        removeModelFiles()
+        cleanupPartials()
         status = .notDownloaded
         defaults.set(false, forKey: Keys.readyFlag)
+    }
+
+    func redownload() async {
+        guard !status.isDownloading else { return }
+        removeModel()
+        await startDownload()
+    }
+
+    private func filesPresentOnDisk() -> Bool {
+        catalog.artifacts.allSatisfy { artifact in
+            fileManager.fileExists(atPath: modelsDirectory.appendingPathComponent(artifact.fileName).path)
+        }
+    }
+
+    private func removeModelFiles() {
+        for artifact in catalog.artifacts {
+            try? fileManager.removeItem(at: modelsDirectory.appendingPathComponent(artifact.fileName))
+        }
+    }
+
+    private func cleanupPartials() {
+        for artifact in catalog.artifacts {
+            let destination = modelsDirectory.appendingPathComponent(artifact.fileName)
+            try? fileManager.removeItem(at: destination.appendingPathExtension("partial"))
+        }
     }
 }
 

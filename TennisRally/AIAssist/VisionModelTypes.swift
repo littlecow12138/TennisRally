@@ -1,21 +1,37 @@
 import Foundation
 
+struct VisionModelArtifact: Equatable, Sendable {
+    let fileName: String
+    let remoteURL: URL
+}
+
 struct VisionModelCatalog: Equatable, Sendable {
     let id: String
     let displayName: String
     let formatLabel: String
     let approximateBytes: Int64
-    let remoteURL: URL
-    let fileName: String
+    let artifacts: [VisionModelArtifact]
 
     static let miniCPMV4 = VisionModelCatalog(
         id: "minicpm-v-4",
         displayName: "MiniCPM-V 4.0",
         formatLabel: "On-device vision · GGUF",
+        // Spec/comps show ~2.1 GB for the vision pack (LLM INT4 + mmproj).
         approximateBytes: 2_100_000_000,
-        remoteURL: URL(string: "https://huggingface.co/openbmb/MiniCPM-V-4-gguf/resolve/main/ggml-model-Q4_0.gguf")!,
-        fileName: "minicpm-v4-ggml-model-Q4_0.gguf"
+        artifacts: [
+            VisionModelArtifact(
+                fileName: "minicpm-v4-ggml-model-Q4_0.gguf",
+                remoteURL: URL(string: "https://huggingface.co/openbmb/MiniCPM-V-4-gguf/resolve/main/ggml-model-Q4_0.gguf")!
+            ),
+            VisionModelArtifact(
+                fileName: "minicpm-v4-mmproj-model-f16.gguf",
+                remoteURL: URL(string: "https://huggingface.co/openbmb/MiniCPM-V-4-gguf/resolve/main/mmproj-model-f16.gguf")!
+            )
+        ]
     )
+
+    var llmFileName: String { artifacts[0].fileName }
+    var mmprojFileName: String { artifacts[1].fileName }
 
     var approximateSizeLabel: String {
         let gb = Double(approximateBytes) / 1_000_000_000
@@ -60,14 +76,8 @@ protocol VisionModelReadiness: AnyObject {
     var isReady: Bool { get }
 }
 
-enum VisionModelStoreError: LocalizedError {
-    case alreadyDownloading
-    case notDownloading
-
-    var errorDescription: String? {
-        switch self {
-        case .alreadyDownloading: return "Download already in progress."
-        case .notDownloading: return "No download in progress."
-        }
-    }
+@MainActor
+protocol VisionModelLocating: VisionModelReadiness {
+    var llmModelURL: URL { get }
+    var mmprojModelURL: URL { get }
 }

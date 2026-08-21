@@ -271,8 +271,14 @@ struct RallyAIVerdictDetailView: View {
                 }
                 .padding(.horizontal, 20)
 
-                VideoPlaceholder(height: 200)
-                    .padding(.horizontal, 16)
+                RallyClipPreviewView(
+                    source: store.videoSourceForActiveClip,
+                    start: rally.start,
+                    end: rally.end,
+                    height: 200,
+                    showsScrubber: false
+                )
+                .padding(.horizontal, 16)
 
                 VStack(spacing: 4) {
                     Text(rally.timeRangeLabel)

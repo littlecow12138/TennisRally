@@ -3,6 +3,7 @@ import SwiftUI
 struct VisionModelDetailView: View {
     @EnvironmentObject private var visionModel: VisionModelStore
     @Environment(\.locale) private var locale
+    @StateObject private var network = CellularNetworkMonitor()
 
     var body: some View {
         ZStack {
@@ -108,11 +109,13 @@ struct VisionModelDetailView: View {
             PrimaryButton(titleKey: "ai.model.download", systemImage: "arrow.down.circle.fill") {
                 Task { await visionModel.startDownload() }
             }
-            Text("ai.model.cellular_warning")
-                .font(.system(size: 12))
-                .foregroundStyle(HardCourt.muted)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
+            if network.isConstrainedOrExpensive {
+                Text("ai.model.cellular_warning")
+                    .font(.system(size: 12))
+                    .foregroundStyle(HardCourt.muted)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+            }
 
         case let .downloading(progress, downloaded, total):
             VStack(spacing: 12) {
@@ -139,6 +142,10 @@ struct VisionModelDetailView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
             .background(HardCourt.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+
+            PrimaryButton(titleKey: "ai.model.redownload", systemImage: "arrow.clockwise.circle.fill") {
+                Task { await visionModel.redownload() }
+            }
 
             Button("ai.model.remove") {
                 visionModel.removeModel()

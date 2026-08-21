@@ -58,15 +58,40 @@ final class AIAssistSessionTests: XCTestCase {
         XCTAssertLessThan(evaluator.evaluatedIDs.count, rallies.count)
     }
 
-    func testHeuristicEvaluatorClassifiesDurationBands() async {
-        let evaluator = OnDeviceRallyClipEvaluator()
-        let short = await evaluator.evaluate(Rally.sample(index: 1, start: 0, end: 3))
-        let normal = await evaluator.evaluate(Rally.sample(index: 2, start: 0, end: 16))
-        let long = await evaluator.evaluate(Rally.sample(index: 3, start: 0, end: 95))
+    func testModelBackedEvaluatorPassesModelPathsToInferencer() async {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try? FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
 
-        XCTAssertEqual(short.kind, .needsReview)
-        XCTAssertEqual(normal.kind, .looksGood)
-        XCTAssertEqual(long.kind, .unclear)
+        let llm = root.appendingPathComponent("llm.gguf")
+        let mmproj = root.appendingPathComponent("mmproj.gguf")
+        try? Data("llm".utf8).write(to: llm)
+        try? Data("mm".utf8).write(to: mmproj)
+        let video = root.appendingPathComponent("clip.mov")
+        try? Data("video".utf8).write(to: video)
+
+        let locator = StubModelLocator(isReady: true, llm: llm, mmproj: mmproj)
+        let frames = StubFrameExtractor(url: root.appendingPathComponent("frame.jpg"))
+        try? Data("jpg".utf8).write(to: frames.url)
+        let inferencer = RecordingInferencer(result: .needsReview)
+        let evaluator = ModelBackedRallyClipEvaluator(
+            modelStore: locator,
+            videoURLProvider: { video },
+            frameExtractor: frames,
+            inferencer: inferencer
+        )
+
+        let verdict = await evaluator.evaluate(Rally.sample(index: 2, start: 1, end: 12))
+        XCTAssertEqual(verdict.kind, .needsReview)
+        XCTAssertEqual(inferencer.lastModelPath, llm.path)
+        XCTAssertEqual(inferencer.lastMmprojPath, mmproj.path)
+        XCTAssertEqual(inferencer.lastImagePath, frames.url.path)
+    }
+
+    func testParseVerdictLabelsFromModelOutput() {
+        XCTAssertEqual(MiniCPMRallyVisionInferencer.parseVerdict(from: "LOOKS_GOOD"), .looksGood)
+        XCTAssertEqual(MiniCPMRallyVisionInferencer.parseVerdict(from: "needs_review please"), .needsReview)
+        XCTAssertEqual(MiniCPMRallyVisionInferencer.parseVerdict(from: "UNCLEAR"), .unclear)
     }
 }
 
@@ -74,6 +99,19 @@ final class AIAssistSessionTests: XCTestCase {
 private final class StubModelReadiness: VisionModelReadiness {
     let isReady: Bool
     init(isReady: Bool) { self.isReady = isReady }
+}
+
+@MainActor
+private final class StubModelLocator: VisionModelLocating {
+    let isReady: Bool
+    let llmModelURL: URL
+    let mmprojModelURL: URL
+
+    init(isReady: Bool, llm: URL, mmproj: URL) {
+        self.isReady = isReady
+        self.llmModelURL = llm
+        self.mmprojModelURL = mmproj
+    }
 }
 
 @MainActor
@@ -129,5 +167,30 @@ private final class GateEvaluator: RallyClipEvaluating {
         await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in
             continuation = cont
         }
+    }
+}
+
+private final class StubFrameExtractor: RallyFrameExtracting {
+    let url: URL
+    init(url: URL) { self.url = url }
+
+    func extractMidFrame(videoURL: URL, start: TimeInterval, end: TimeInterval) async throws -> URL {
+        url
+    }
+}
+
+private final class RecordingInferencer: RallyVisionInferencing {
+    let result: AIRallyVerdictKind
+    private(set) var lastImagePath: String?
+    private(set) var lastModelPath: String?
+    private(set) var lastMmprojPath: String?
+
+    init(result: AIRallyVerdictKind) { self.result = result }
+
+    func classifyRallyFrame(imagePath: String, modelPath: String, mmprojPath: String) async throws -> AIRallyVerdictKind {
+        lastImagePath = imagePath
+        lastModelPath = modelPath
+        lastMmprojPath = mmprojPath
+        return result
     }
 }

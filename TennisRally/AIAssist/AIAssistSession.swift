@@ -81,34 +81,6 @@ protocol RallyClipEvaluating: AnyObject {
     func evaluate(_ rally: Rally) async -> AIRallyVerdict
 }
 
-/// On-device clip check used while the downloaded GGUF is present.
-/// Classifies by duration bands so the Assist UX is exercisable without
-/// embedding the full MiniCPM runtime in this slice; replace with VLM inference later.
-@MainActor
-final class OnDeviceRallyClipEvaluator: RallyClipEvaluating {
-    func evaluate(_ rally: Rally) async -> AIRallyVerdict {
-        let duration = rally.duration
-        let kind: AIRallyVerdictKind
-        let confidence: AIRallyConfidence
-        if duration < 5 {
-            kind = .needsReview
-            confidence = .high
-        } else if duration > 60 {
-            kind = .unclear
-            confidence = .low
-        } else {
-            kind = .looksGood
-            confidence = .medium
-        }
-        return AIRallyVerdict(
-            rallyID: rally.id,
-            kind: kind,
-            reasonKey: kind.defaultReasonKey,
-            confidence: confidence
-        )
-    }
-}
-
 @MainActor
 final class AIAssistSession: ObservableObject {
     @Published private(set) var phase: AIAssistPhase = .idle
@@ -125,11 +97,11 @@ final class AIAssistSession: ObservableObject {
 
     init(
         modelStore: VisionModelReadiness,
-        evaluator: RallyClipEvaluating? = nil,
-        stepDelayNanoseconds: UInt64 = 180_000_000
+        evaluator: RallyClipEvaluating,
+        stepDelayNanoseconds: UInt64 = 40_000_000
     ) {
         self.modelStore = modelStore
-        self.evaluator = evaluator ?? OnDeviceRallyClipEvaluator()
+        self.evaluator = evaluator
         self.stepDelayNanoseconds = stepDelayNanoseconds
     }
 

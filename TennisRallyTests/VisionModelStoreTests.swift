@@ -33,7 +33,7 @@ final class VisionModelStoreTests: XCTestCase {
         XCTAssertEqual(store.settingsSubtitleKey, "ai.model.status.not_downloaded")
     }
 
-    func testDownloadProgressThenReady() async {
+    func testDownloadProgressThenReadyForBothArtifacts() async {
         let downloader = MockVisionModelDownloader()
         downloader.progressSteps = [(500, 1000), (1000, 1000)]
         let store = makeStore(downloader: downloader)
@@ -43,7 +43,8 @@ final class VisionModelStoreTests: XCTestCase {
         XCTAssertEqual(store.status, .ready)
         XCTAssertTrue(store.isReady)
         XCTAssertEqual(store.settingsSubtitleKey, "ai.model.status.ready")
-        XCTAssertTrue(fileManager.fileExists(atPath: store.modelFileURL.path))
+        XCTAssertTrue(fileManager.fileExists(atPath: store.llmModelURL.path))
+        XCTAssertTrue(fileManager.fileExists(atPath: store.mmprojModelURL.path))
         XCTAssertEqual(defaults.bool(forKey: VisionModelStore.Keys.readyFlag), true)
     }
 
@@ -59,7 +60,8 @@ final class VisionModelStoreTests: XCTestCase {
 
         XCTAssertEqual(store.status, .notDownloaded)
         XCTAssertFalse(store.isReady)
-        XCTAssertFalse(fileManager.fileExists(atPath: store.modelFileURL.path))
+        XCTAssertFalse(fileManager.fileExists(atPath: store.llmModelURL.path))
+        XCTAssertFalse(fileManager.fileExists(atPath: store.mmprojModelURL.path))
     }
 
     func testRemoveDeletesReadyModel() async {
@@ -73,11 +75,27 @@ final class VisionModelStoreTests: XCTestCase {
 
         XCTAssertEqual(store.status, .notDownloaded)
         XCTAssertFalse(store.isReady)
-        XCTAssertFalse(fileManager.fileExists(atPath: store.modelFileURL.path))
+        XCTAssertFalse(fileManager.fileExists(atPath: store.llmModelURL.path))
         XCTAssertFalse(defaults.bool(forKey: VisionModelStore.Keys.readyFlag))
     }
 
-    func testRelaunchRestoresReadyWhenFilePresent() async {
+    func testRedownloadReplacesReadyFiles() async {
+        let downloader = MockVisionModelDownloader()
+        downloader.progressSteps = [(10, 10)]
+        let store = makeStore(downloader: downloader)
+        await store.startDownload()
+        let firstLLM = try? Data(contentsOf: store.llmModelURL)
+
+        downloader.payload = Data("model-v2".utf8)
+        await store.redownload()
+
+        XCTAssertEqual(store.status, .ready)
+        let secondLLM = try? Data(contentsOf: store.llmModelURL)
+        XCTAssertNotEqual(firstLLM, secondLLM)
+        XCTAssertEqual(secondLLM, Data("model-v2".utf8))
+    }
+
+    func testRelaunchRestoresReadyWhenFilesPresent() async {
         let downloader = MockVisionModelDownloader()
         downloader.progressSteps = [(10, 10)]
         let store = makeStore(downloader: downloader)
@@ -115,6 +133,7 @@ final class VisionModelStoreTests: XCTestCase {
 final class MockVisionModelDownloader: VisionModelDownloading {
     var progressSteps: [(Int64, Int64)] = [(1, 1)]
     var hangUntilCancelled = false
+    var payload = Data("model".utf8)
     private(set) var cancelCount = 0
     private var continuation: CheckedContinuation<Void, Never>?
     private var cancelled = false
@@ -138,7 +157,7 @@ final class MockVisionModelDownloader: VisionModelDownloading {
         for step in progressSteps {
             progress(step.0, step.1)
         }
-        try Data("model".utf8).write(to: destination, options: .atomic)
+        try payload.write(to: destination, options: .atomic)
     }
 
     func cancel() {
