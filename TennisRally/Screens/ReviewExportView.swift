@@ -107,7 +107,14 @@ struct ReviewExportView: View {
 
     private var videoBlock: some View {
         ZStack(alignment: .topLeading) {
-            VideoPlaceholder(height: 240)
+            RallyClipPreviewView(
+                source: store.videoSourceForActiveClip,
+                start: current.start,
+                end: current.end,
+                height: 240,
+                showsScrubber: true
+            )
+            .id(current.id)
             if current.isCorrected {
                 HStack(spacing: 6) {
                     Image(systemName: "checkmark.circle.fill")
@@ -122,35 +129,6 @@ struct ReviewExportView: View {
             }
         }
         .padding(.horizontal, 16)
-        .overlay(alignment: .bottom) {
-            HStack(spacing: 10) {
-                Image(systemName: "play.fill")
-                    .foregroundStyle(HardCourt.text)
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        Capsule().fill(HardCourt.surface).frame(height: 4)
-                        Capsule().fill(HardCourt.accent).frame(width: geo.size.width * 0.35, height: 4)
-                        Circle()
-                            .fill(HardCourt.text)
-                            .frame(width: 10, height: 10)
-                            .offset(x: geo.size.width * 0.35 - 5)
-                    }
-                    .frame(maxHeight: .infinity)
-                }
-                .frame(height: 16)
-                Text("00:00")
-                    .font(.system(size: 11, design: .monospaced))
-                    .foregroundStyle(HardCourt.muted)
-                Text(String(format: "%02d:%02d", Int(current.duration) / 60, Int(current.duration) % 60))
-                    .font(.system(size: 11, design: .monospaced))
-                    .foregroundStyle(HardCourt.muted)
-                Image(systemName: "arrow.up.left.and.arrow.down.right")
-                    .font(.system(size: 12))
-                    .foregroundStyle(HardCourt.text)
-            }
-            .padding(.horizontal, 28)
-            .padding(.bottom, 12)
-        }
     }
 
     private var meta: some View {

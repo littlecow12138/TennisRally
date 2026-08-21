@@ -59,6 +59,12 @@
 "review.meta" = "%@ · %@ · %@";
 "common.rally" = "Rally %02d";
 "common.ok" = "OK";
+"playback.play" = "Play";
+"playback.pause" = "Pause";
+"playback.missing_file" = "No local video file. Re-import the clip to preview.";
+"playback.file_unavailable" = "Video file is missing on disk. Re-import to restore playback.";
+"playback.decode_failed" = "Couldn’t decode this clip for playback. Try another export.";
+"playback.ready" = "Ready";
 "settings.title" = "Settings";
 "settings.appearance" = "Appearance";
 "settings.theme" = "Theme";

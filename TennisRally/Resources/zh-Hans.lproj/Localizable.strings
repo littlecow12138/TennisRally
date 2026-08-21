@@ -59,6 +59,12 @@
 "review.meta" = "%@ · %@ · %@";
 "common.rally" = "回合 %02d";
 "common.ok" = "好";
+"playback.play" = "播放";
+"playback.pause" = "暂停";
+"playback.missing_file" = "没有本地视频文件。请重新导入后再预览。";
+"playback.file_unavailable" = "磁盘上找不到视频文件。请重新导入以恢复播放。";
+"playback.decode_failed" = "无法解码该片段进行播放。请换一种导出后再试。";
+"playback.ready" = "就绪";
 "settings.title" = "设置";
 "settings.appearance" = "外观";
 "settings.theme" = "主题";
