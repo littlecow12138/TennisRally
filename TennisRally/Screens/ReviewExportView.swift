@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ReviewExportView: View {
     @EnvironmentObject private var store: AppSessionStore
+    @Environment(\.locale) private var locale
     let rally: Rally
     @State private var exportAlert: ExportStubAlert?
 
@@ -16,14 +17,14 @@ struct ReviewExportView: View {
             }
         }
 
-        var titleKey: String {
+        var titleKey: LocalizedStringKey {
             switch self {
             case .exportClip: return "review.export_stub_title"
             case .shareToPhotos: return "review.share_stub_title"
             }
         }
 
-        var messageKey: String {
+        var messageKey: LocalizedStringKey {
             switch self {
             case .exportClip: return "review.export_stub_body"
             case .shareToPhotos: return "review.share_stub_body"
@@ -56,15 +57,15 @@ struct ReviewExportView: View {
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: "square.and.arrow.up")
-                        Text(String(localized: "review.share_photos"))
+                        Text("review.share_photos")
                     }
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(HardCourt.text)
                 }
-                Text(String(localized: "review.export_note"))
+                Text("review.export_note")
                     .font(.system(size: 12))
                     .foregroundStyle(HardCourt.muted)
-                Text(String(localized: "review.export_shell_note"))
+                Text("review.export_shell_note")
                     .font(.system(size: 11))
                     .foregroundStyle(HardCourt.muted.opacity(0.9))
                     .multilineTextAlignment(.center)
@@ -76,9 +77,9 @@ struct ReviewExportView: View {
         }
         .alert(item: $exportAlert) { alert in
             Alert(
-                title: Text(NSLocalizedString(alert.titleKey, comment: "")),
-                message: Text(NSLocalizedString(alert.messageKey, comment: "")),
-                dismissButton: .default(Text(NSLocalizedString("common.ok", comment: "")))
+                title: Text(alert.titleKey),
+                message: Text(alert.messageKey),
+                dismissButton: .default(Text("common.ok"))
             )
         }
     }
@@ -95,7 +96,7 @@ struct ReviewExportView: View {
                     .background(HardCourt.surface, in: Circle())
             }
             Spacer()
-            Text(String(format: String(localized: "common.rally"), current.index))
+            Text(AppLocalization.format("common.rally", locale: locale, current.index as CVarArg))
                 .font(.system(size: 17, weight: .bold))
                 .foregroundStyle(HardCourt.text)
             Spacer()
@@ -110,7 +111,7 @@ struct ReviewExportView: View {
             if current.isCorrected {
                 HStack(spacing: 6) {
                     Image(systemName: "checkmark.circle.fill")
-                    Text(String(localized: "review.corrected"))
+                    Text("review.corrected")
                 }
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(HardCourt.accent)
@@ -153,15 +154,15 @@ struct ReviewExportView: View {
     }
 
     private var meta: some View {
-        let status = current.isCorrected
-            ? String(localized: "review.corrected")
-            : String(localized: "status.processed")
+        let statusKey = current.isCorrected ? "review.corrected" : "status.processed"
+        let status = AppLocalization.text(statusKey, locale: locale)
         return Text(
-            String(
-                format: String(localized: "review.meta"),
-                current.timeRangeLabel,
-                current.durationLabel,
-                status
+            AppLocalization.format(
+                "review.meta",
+                locale: locale,
+                current.timeRangeLabel as CVarArg,
+                current.durationLabel as CVarArg,
+                status as CVarArg
             )
         )
         .font(.system(size: 14))
@@ -187,7 +188,7 @@ struct ReviewExportView: View {
     private func neighborTitle(offset: Int) -> String {
         let idx = currentIndex + offset
         guard store.rallies.indices.contains(idx) else { return "—" }
-        return String(format: String(localized: "common.rally"), store.rallies[idx].index)
+        return AppLocalization.format("common.rally", locale: locale, store.rallies[idx].index as CVarArg)
     }
 
     private func neighborButton(title: String, systemImage: String, enabled: Bool, trailingIcon: Bool = false, action: @escaping () -> Void) -> some View {

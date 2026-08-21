@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RallyTimelineView: View {
     @EnvironmentObject private var store: AppSessionStore
+    @Environment(\.locale) private var locale
 
     var body: some View {
         ZStack {
@@ -10,7 +11,7 @@ struct RallyTimelineView: View {
                 navBar
                 if store.rallies.isEmpty {
                     Spacer()
-                    Text(String(localized: "rallies.empty"))
+                    Text("rallies.empty")
                         .font(.system(size: 15))
                         .foregroundStyle(HardCourt.muted)
                         .multilineTextAlignment(.center)
@@ -34,11 +35,11 @@ struct RallyTimelineView: View {
                     .foregroundStyle(HardCourt.accent)
             }
             Spacer()
-            Text(String(localized: "rallies.title"))
+            Text("rallies.title")
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(HardCourt.text)
             Spacer()
-            Text(String(localized: "rallies.edit"))
+            Text("rallies.edit")
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(HardCourt.accent)
         }
@@ -51,12 +52,17 @@ struct RallyTimelineView: View {
             Text(store.activeVideo?.title ?? "Saturday practice")
                 .font(.system(size: 28, weight: .bold))
                 .foregroundStyle(HardCourt.text)
-            Text(String(format: String(localized: "rallies.count"), store.rallies.count, store.activeVideo?.durationLabel ?? "12:04"))
+            Text(AppLocalization.format(
+                "rallies.count",
+                locale: locale,
+                store.rallies.count as CVarArg,
+                (store.activeVideo?.durationLabel ?? "12:04") as CVarArg
+            ))
                 .font(.system(size: 14))
                 .foregroundStyle(HardCourt.muted)
 
             HStack(spacing: 14) {
-                Button(String(localized: "rallies.review_all")) {
+                Button("rallies.review_all") {
                     if let first = store.rallies.first {
                         store.openReview(for: first)
                     }
@@ -65,13 +71,13 @@ struct RallyTimelineView: View {
                 Rectangle()
                     .fill(HardCourt.muted.opacity(0.5))
                     .frame(width: 1, height: 14)
-                Button(String(localized: "rallies.export")) {}
+                Button("rallies.export") {}
                     .foregroundStyle(HardCourt.accent)
             }
             .font(.system(size: 15, weight: .semibold))
 
             Divider().overlay(HardCourt.hairline)
-            Text(String(localized: "rallies.hint"))
+            Text("rallies.hint")
                 .font(.system(size: 12))
                 .foregroundStyle(HardCourt.muted)
         }
@@ -88,7 +94,7 @@ struct RallyTimelineView: View {
                     } label: {
                         HStack(spacing: 10) {
                             VStack(alignment: .leading, spacing: 3) {
-                                Text(String(format: String(localized: "common.rally"), rally.index))
+                                Text(AppLocalization.format("common.rally", locale: locale, rally.index as CVarArg))
                                     .font(.system(size: 15, weight: .semibold))
                                     .foregroundStyle(HardCourt.text)
                                 Text(rally.timeRangeLabel)
@@ -106,7 +112,7 @@ struct RallyTimelineView: View {
                                 .frame(width: 36, alignment: .trailing)
 
                             HStack(spacing: 2) {
-                                Text(String(localized: "rallies.correct"))
+                                Text("rallies.correct")
                                 Image(systemName: "chevron.right")
                             }
                             .font(.system(size: 13, weight: .semibold))

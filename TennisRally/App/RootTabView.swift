@@ -7,19 +7,19 @@ struct RootTabView: View {
         TabView(selection: $store.selectedTab) {
             LibraryImportView()
                 .tabItem {
-                    Label(String(localized: "tab.library"), systemImage: "film.stack")
+                    Label("tab.library", systemImage: "film.stack")
                 }
                 .tag(AppTab.library)
 
             OfflineProcessingView()
                 .tabItem {
-                    Label(String(localized: "tab.process"), systemImage: "arrow.down.left.and.arrow.up.right.circle")
+                    Label("tab.process", systemImage: "arrow.down.left.and.arrow.up.right.circle")
                 }
                 .tag(AppTab.process)
 
             RallyTimelineView()
                 .tabItem {
-                    Label(String(localized: "tab.rallies"), systemImage: "sportscourt")
+                    Label("tab.rallies", systemImage: "sportscourt")
                 }
                 .tag(AppTab.rallies)
         }

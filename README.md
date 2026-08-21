@@ -8,6 +8,7 @@ iOS (iPhone) app for offline tennis rally splitting.
 2. Offline processing — onset clustering + bounce/short filters (LCOW-4 frozen pipeline)
 3. Rally timeline — index, start/end, scrub/correct entry points
 4. Correction editor / review export (UI from LCOW-7 shell)
+5. Settings — theme + EN/ZH language (LCOW-10)
 
 Brand assets: logo mark 01, app icon 02, wordmark lockup 03.
 
@@ -23,6 +24,17 @@ Port of `_draft/segment_img4257_batch.py`:
 4. Present remaining intervals as the rally list
 
 Reference notes: `_draft/PIPELINE_STATUS.md`.
+
+## Design tokens (Hard Court)
+
+| Token | Dark | Light |
+| --- | --- | --- |
+| bg | `#0C1612` | `#F4F6F3` |
+| surface | `#15241C` | `#E8E4DC` |
+| accent | `#C8E83A` | `#C8E83A` |
+| chalk | `#E8E4DC` | `#E8E4DC` |
+| text | `#F4F6F3` | `#0C1612` |
+| muted | `#8A9A90` | `#5A6B60` |
 
 ## Build
 
@@ -41,3 +53,7 @@ Open `TennisRally.xcodeproj` in Xcode if you prefer the GUI.
 4. Failures surface alerts (decode / no audio / no rallies) without crashing
 
 Suggested short clip: `IMG_4257 2.MOV`.
+
+## Contributing
+
+PRs must link a Multica issue (`LCOW-N` in the title + `Closes LCOW-N` in the body). See [CONTRIBUTING.md](CONTRIBUTING.md).

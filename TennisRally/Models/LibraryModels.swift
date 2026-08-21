@@ -54,3 +54,7 @@ enum AppTab: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 }
+
+enum LibraryRoute: Hashable {
+    case settings
+}

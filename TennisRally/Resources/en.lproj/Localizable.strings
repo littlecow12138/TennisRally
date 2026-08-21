@@ -56,3 +56,13 @@
 "review.meta" = "%@ · %@ · %@";
 "common.rally" = "Rally %02d";
 "common.ok" = "OK";
+"settings.title" = "Settings";
+"settings.appearance" = "Appearance";
+"settings.theme" = "Theme";
+"settings.theme.light" = "Light";
+"settings.theme.dark" = "Dark";
+"settings.theme.system" = "System";
+"settings.language" = "Language";
+"settings.language.english" = "English";
+"settings.language.zh_hans" = "简体中文";
+"settings.apply_immediately" = "Changes apply immediately";
