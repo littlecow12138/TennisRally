@@ -15,6 +15,9 @@ final class AppSessionStore: ObservableObject {
     @Published var showCorrection = false
     @Published var showReview = false
     @Published var alertMessage: String?
+    @Published var libraryPath: [LibraryRoute] = []
+    @Published var inspectingVerdictRallyID: UUID?
+    @Published var showAIChecking = false
 
     private var processingTask: Task<Void, Never>?
     private var backgroundTaskID = UIBackgroundTaskIdentifier.invalid
@@ -316,6 +319,19 @@ final class AppSessionStore: ObservableObject {
     func openReview(for rally: Rally) {
         reviewingRallyID = rally.id
         showReview = true
+    }
+
+    func openVisionModelSettings() {
+        selectedTab = .library
+        libraryPath = [.settings, .visionModel]
+    }
+
+    func openVerdictInspector(for rally: Rally) {
+        inspectingVerdictRallyID = rally.id
+    }
+
+    var inspectingVerdictRally: Rally? {
+        rallies.first { $0.id == inspectingVerdictRallyID }
     }
 
     func selectAdjacentReview(offset: Int) {

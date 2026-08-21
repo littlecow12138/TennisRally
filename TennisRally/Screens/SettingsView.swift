@@ -2,6 +2,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var settings: AppSettingsStore
+    @EnvironmentObject private var visionModel: VisionModelStore
+    @Environment(\.locale) private var locale
 
     var body: some View {
         ZStack {
@@ -10,6 +12,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 28) {
                     appearanceSection
                     languageSection
+                    aiAssistSection
                     Text("settings.apply_immediately")
                         .font(.system(size: 13))
                         .foregroundStyle(HardCourt.muted)
@@ -62,6 +65,64 @@ struct SettingsView: View {
             }
             .background(HardCourt.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        }
+    }
+
+    private var aiAssistSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            sectionHeader("settings.ai_assist")
+            NavigationLink(value: LibraryRoute.visionModel) {
+                HStack(spacing: 12) {
+                    Image(systemName: "cpu")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(HardCourt.accent)
+                        .frame(width: 28)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("ai.model.title")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundStyle(HardCourt.text)
+                        Text(visionModelSubtitle)
+                            .font(.system(size: 13))
+                            .foregroundStyle(HardCourt.muted)
+                    }
+                    Spacer(minLength: 8)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(HardCourt.muted)
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 14)
+                .background(HardCourt.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            }
+            .buttonStyle(.plain)
+
+            Text("ai.privacy.footer")
+                .font(.system(size: 12))
+                .foregroundStyle(HardCourt.muted)
+                .padding(.leading, 4)
+        }
+    }
+
+    private var visionModelSubtitle: String {
+        switch visionModel.status {
+        case .notDownloaded, .failed:
+            return AppLocalization.format(
+                "ai.model.status.not_downloaded_fmt",
+                locale: locale,
+                visionModel.catalog.approximateSizeLabel as CVarArg
+            )
+        case .downloading:
+            return AppLocalization.format(
+                "ai.model.status.downloading_fmt",
+                locale: locale,
+                visionModel.downloadProgressPercent as CVarArg
+            )
+        case .ready:
+            return AppLocalization.format(
+                "ai.model.status.ready_fmt",
+                locale: locale,
+                visionModel.catalog.displayName as CVarArg
+            )
         }
     }
 

@@ -10,7 +10,7 @@ struct LibraryImportView: View {
     @State private var isImporting = false
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $store.libraryPath) {
             ZStack {
                 CourtBackdrop()
                 ScrollView {
@@ -45,6 +45,8 @@ struct LibraryImportView: View {
                 switch route {
                 case .settings:
                     SettingsView()
+                case .visionModel:
+                    VisionModelDetailView()
                 }
             }
         }

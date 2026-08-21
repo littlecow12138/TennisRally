@@ -8,18 +8,27 @@
 
 /* Begin PBXBuildFile section */
 		004D72A7B3B61FE09DFBDACF /* SharedUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3E71B56C7EAF5E1CBB23D6 /* SharedUI.swift */; };
+		014AA914E6A33B15131100D9 /* VisionModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70448FC0A30E422E314C603 /* VisionModelStore.swift */; };
 		080A8E1FE688ADC56851EB84 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3D71844A3262391D0B0869 /* SettingsView.swift */; };
 		08D0097480A03512E5D31354 /* OnsetRallySegmenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80BF8B40FEF4017A2EAC022 /* OnsetRallySegmenter.swift */; };
+		0AF952DE150842F73078AED7 /* MiniCPMRallyVisionInferencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4502E3AB7E6822D0300FBD /* MiniCPMRallyVisionInferencer.swift */; };
 		0E92CEB4D8EE601EC317AF4E /* AppSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD743DE739FD1A99933DDD8 /* AppSessionStore.swift */; };
 		1F20DF17AA23674B3D7E6DAC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F1077BE29FC774467660045 /* Assets.xcassets */; };
+		23884E0C86945FEF94C649AF /* AIAssistSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11B08DEE9B325958AEC68F5 /* AIAssistSession.swift */; };
+		2603E7730D1F9E98CD3F525C /* MBMtmd.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA4F0FA91C81FC5CB8116114 /* MBMtmd.mm */; };
 		26FA404F949D526CA4C65844 /* RallyTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8AC706B6B741DC4BFF4D7CB /* RallyTimelineView.swift */; };
 		27DCD49E81102B2F2151751D /* RallyEditingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F513A83ACE22C1FCF820F98F /* RallyEditingTests.swift */; };
 		3074CC871BD2C89047A2A82C /* AppLocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801158595B8EE253AD1062EA /* AppLocalizationTests.swift */; };
 		31408496946F26E4DED9AA3C /* LibraryImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74833D13935FC302193370B3 /* LibraryImportView.swift */; };
 		36E13FF67E14043A09F5EABE /* IMG_4257_2_first120s.wav in Resources */ = {isa = PBXBuildFile; fileRef = 16FD24F373D293FE1F6BF7B1 /* IMG_4257_2_first120s.wav */; };
+		3BB9E2B054E12A6D460F2099 /* ModelBackedRallyClipEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB6DE19B3627BDA528A46E2 /* ModelBackedRallyClipEvaluator.swift */; };
+		4A79F7D47F44DD0DB6C7672F /* AIAssistViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C797D58099078D22CDFBE6F7 /* AIAssistViews.swift */; };
+		59DABD8C74A1AF86836E9292 /* llama.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E46B94C088256FAC60A221D9 /* llama.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5AB3123B526994E78EA4B762 /* CellularNetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344C6239BB1B9F7109380A3F /* CellularNetworkMonitor.swift */; };
 		5AC321E65132A97E0B9E299A /* ReviewExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F7B5BC108BB5D22F0884FE /* ReviewExportView.swift */; };
 		5ED77FE0D6DDD86656AAC328 /* LibraryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A95D90942819C9A687524A /* LibraryModels.swift */; };
 		782F2B5F2D13FE7E4251858D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5ED099E7C3EA0EE6C04A62E2 /* Localizable.strings */; };
+		782F9233B0415DDF885D9B12 /* VisionModelTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1321C8137E313BABE88A93E1 /* VisionModelTypes.swift */; };
 		7947B1ED94E7662586961F03 /* OnsetRallySegmenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D086C97275CFEDB14D40E2 /* OnsetRallySegmenterTests.swift */; };
 		864A471286DCA3F526CF859A /* OfflineProcessingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EC2D88F5C5A6286D463F5F /* OfflineProcessingView.swift */; };
 		867DD2C63CA9529EFFCCB5E8 /* RallyClipPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECA4F649D14C152F4F0A77F /* RallyClipPreviewView.swift */; };
@@ -31,11 +40,15 @@
 		A94B3BBF1375AD75FFB03026 /* HardCourtTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBA2B3EE5E54308FA91F07C /* HardCourtTheme.swift */; };
 		C0FD1C85DA5505E6E67A6CC9 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE514CD4E4CFECD6C89DC16 /* RootTabView.swift */; };
 		C314D7D83AE2113EF1A549DC /* AppLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E12B234E181DBBC2619AA6 /* AppLocalization.swift */; };
+		C37E9E1454A76C37C9660294 /* AIAssistSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF78B3F490BEAF50DCA8383F /* AIAssistSessionTests.swift */; };
 		C45E7A2AAEFCA1CBD5308733 /* TennisRallyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A44B62E25E6DEE7A43FAFF2 /* TennisRallyApp.swift */; };
 		C7EC3C0712EA323B8EEF97DA /* RallyClipPlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA721ACD355718F14DE5020 /* RallyClipPlayerModel.swift */; };
+		C92E9FA8094BD25535BE1C02 /* VisionModelDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B43C1A07F46CB0D21FDD4C /* VisionModelDetailView.swift */; };
 		CDE4E9DD212C1CF7EB140BB4 /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFC22E887E3B45D8C7E929D /* AppSettingsStore.swift */; };
+		D33C5C13F5608D66351DA605 /* VisionModelStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6B12EF8DA41FE065304994F /* VisionModelStoreTests.swift */; };
 		D722C81D635DC7DCABAA5703 /* CorrectionEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E66AFE339EB40D02FDC5E01 /* CorrectionEditorView.swift */; };
 		DB46313B9FF19F4CD193759C /* Rally.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32B9056435862D84A07FBC4 /* Rally.swift */; };
+		E3495C6F0FAE3ABF25354237 /* llama.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E46B94C088256FAC60A221D9 /* llama.xcframework */; };
 		E9F39DBD221F69F31366D3A7 /* AppSettingsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A17D969FC124DDC5BBC359 /* AppSettingsStoreTests.swift */; };
 		EBC7A2C80C81A99FDB92758A /* VideoAudioExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3FD696CA5EFCE17F2C426D /* VideoAudioExtractor.swift */; };
 /* End PBXBuildFile section */
@@ -50,16 +63,35 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		47D1F8B6F74E2A50AD01E74E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				59DABD8C74A1AF86836E9292 /* llama.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		01ADD5A15430011DA1925193 /* TennisRally.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TennisRally.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06B43C1A07F46CB0D21FDD4C /* VisionModelDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionModelDetailView.swift; sourceTree = "<group>"; };
+		06E201D74FF003549FBA1614 /* MBMtmd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBMtmd.h; sourceTree = "<group>"; };
 		0CA721ACD355718F14DE5020 /* RallyClipPlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallyClipPlayerModel.swift; sourceTree = "<group>"; };
 		0DFC22E887E3B45D8C7E929D /* AppSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStore.swift; sourceTree = "<group>"; };
 		11D086C97275CFEDB14D40E2 /* OnsetRallySegmenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnsetRallySegmenterTests.swift; sourceTree = "<group>"; };
+		1321C8137E313BABE88A93E1 /* VisionModelTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionModelTypes.swift; sourceTree = "<group>"; };
 		145F6DF3B791ADDE85F1E9A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		14ED80534AB44C60F975AD3C /* TennisRallyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TennisRallyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		16FD24F373D293FE1F6BF7B1 /* IMG_4257_2_first120s.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = IMG_4257_2_first120s.wav; sourceTree = "<group>"; };
 		1B2A0ADD33B1ABDF55DCCB2F /* RallySegmentationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallySegmentationService.swift; sourceTree = "<group>"; };
+		2E4502E3AB7E6822D0300FBD /* MiniCPMRallyVisionInferencer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniCPMRallyVisionInferencer.swift; sourceTree = "<group>"; };
 		2F43FC315885126120CB5883 /* TrimTimelineMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrimTimelineMapper.swift; sourceTree = "<group>"; };
+		344C6239BB1B9F7109380A3F /* CellularNetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellularNetworkMonitor.swift; sourceTree = "<group>"; };
 		3B3FD696CA5EFCE17F2C426D /* VideoAudioExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAudioExtractor.swift; sourceTree = "<group>"; };
 		3D4C02B87731609C94D249A0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3F1077BE29FC774467660045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -74,19 +106,39 @@
 		801158595B8EE253AD1062EA /* AppLocalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalizationTests.swift; sourceTree = "<group>"; };
 		801F0077632113E0871D7891 /* BackgroundSplitSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundSplitSupport.swift; sourceTree = "<group>"; };
 		85E398E5BED5C0632D2B44F1 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		9AB6DE19B3627BDA528A46E2 /* ModelBackedRallyClipEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBackedRallyClipEvaluator.swift; sourceTree = "<group>"; };
 		9ECA4F649D14C152F4F0A77F /* RallyClipPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallyClipPreviewView.swift; sourceTree = "<group>"; };
+		A11B08DEE9B325958AEC68F5 /* AIAssistSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistSession.swift; sourceTree = "<group>"; };
+		A70448FC0A30E422E314C603 /* VisionModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionModelStore.swift; sourceTree = "<group>"; };
+		AB334328A2561B3D7D4A2B59 /* TennisRally-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TennisRally-Bridging-Header.h"; sourceTree = "<group>"; };
 		AE3E71B56C7EAF5E1CBB23D6 /* SharedUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUI.swift; sourceTree = "<group>"; };
+		B6B12EF8DA41FE065304994F /* VisionModelStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionModelStoreTests.swift; sourceTree = "<group>"; };
 		B7AD891F737C583A29B4657B /* RallyPlaybackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallyPlaybackTests.swift; sourceTree = "<group>"; };
+		C797D58099078D22CDFBE6F7 /* AIAssistViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistViews.swift; sourceTree = "<group>"; };
 		CAAF4CA8914403E14B24BD04 /* RallyPlaybackBounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallyPlaybackBounds.swift; sourceTree = "<group>"; };
+		CF78B3F490BEAF50DCA8383F /* AIAssistSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistSessionTests.swift; sourceTree = "<group>"; };
 		D32B9056435862D84A07FBC4 /* Rally.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rally.swift; sourceTree = "<group>"; };
 		D4A95D90942819C9A687524A /* LibraryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryModels.swift; sourceTree = "<group>"; };
+		E46B94C088256FAC60A221D9 /* llama.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = llama.xcframework; path = Vendor/llama.xcframework; sourceTree = "<group>"; };
 		E7A17D969FC124DDC5BBC359 /* AppSettingsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStoreTests.swift; sourceTree = "<group>"; };
 		E80BF8B40FEF4017A2EAC022 /* OnsetRallySegmenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnsetRallySegmenter.swift; sourceTree = "<group>"; };
 		F4EC2D88F5C5A6286D463F5F /* OfflineProcessingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineProcessingView.swift; sourceTree = "<group>"; };
 		F513A83ACE22C1FCF820F98F /* RallyEditingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallyEditingTests.swift; sourceTree = "<group>"; };
 		F8AC706B6B741DC4BFF4D7CB /* RallyTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RallyTimelineView.swift; sourceTree = "<group>"; };
+		FA4F0FA91C81FC5CB8116114 /* MBMtmd.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MBMtmd.mm; sourceTree = "<group>"; };
 		FF3D71844A3262391D0B0869 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AABAABE78258339BD0979350 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3495C6F0FAE3ABF25354237 /* llama.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		04FA650670204E453A4FBCD5 /* App */ = {
@@ -103,6 +155,7 @@
 			children = (
 				DCEFA1650203347FB7CDB8B5 /* TennisRally */,
 				586901AEA756B5CB7EF579E7 /* TennisRallyTests */,
+				CC42A6CA462B7A9D85D862D2 /* Frameworks */,
 				D68CF1483701C25700AF52AE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -110,24 +163,38 @@
 		2342A441463FC1B90E5A5421 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				C797D58099078D22CDFBE6F7 /* AIAssistViews.swift */,
 				5E66AFE339EB40D02FDC5E01 /* CorrectionEditorView.swift */,
 				74833D13935FC302193370B3 /* LibraryImportView.swift */,
 				F4EC2D88F5C5A6286D463F5F /* OfflineProcessingView.swift */,
 				F8AC706B6B741DC4BFF4D7CB /* RallyTimelineView.swift */,
 				62F7B5BC108BB5D22F0884FE /* ReviewExportView.swift */,
 				FF3D71844A3262391D0B0869 /* SettingsView.swift */,
+				06B43C1A07F46CB0D21FDD4C /* VisionModelDetailView.swift */,
 			);
 			path = Screens;
+			sourceTree = "<group>";
+		};
+		36DB5AE1A4020AE7CD5B5DA3 /* MTMD */ = {
+			isa = PBXGroup;
+			children = (
+				06E201D74FF003549FBA1614 /* MBMtmd.h */,
+				FA4F0FA91C81FC5CB8116114 /* MBMtmd.mm */,
+				AB334328A2561B3D7D4A2B59 /* TennisRally-Bridging-Header.h */,
+			);
+			path = MTMD;
 			sourceTree = "<group>";
 		};
 		586901AEA756B5CB7EF579E7 /* TennisRallyTests */ = {
 			isa = PBXGroup;
 			children = (
+				CF78B3F490BEAF50DCA8383F /* AIAssistSessionTests.swift */,
 				801158595B8EE253AD1062EA /* AppLocalizationTests.swift */,
 				E7A17D969FC124DDC5BBC359 /* AppSettingsStoreTests.swift */,
 				11D086C97275CFEDB14D40E2 /* OnsetRallySegmenterTests.swift */,
 				F513A83ACE22C1FCF820F98F /* RallyEditingTests.swift */,
 				B7AD891F737C583A29B4657B /* RallyPlaybackTests.swift */,
+				B6B12EF8DA41FE065304994F /* VisionModelStoreTests.swift */,
 				965F76E973C7B6AAEC8D0A01 /* Fixtures */,
 			);
 			path = TennisRallyTests;
@@ -179,12 +246,34 @@
 			path = Playback;
 			sourceTree = "<group>";
 		};
+		B565B1FDAA6B0A7ED8070EA3 /* AIAssist */ = {
+			isa = PBXGroup;
+			children = (
+				A11B08DEE9B325958AEC68F5 /* AIAssistSession.swift */,
+				344C6239BB1B9F7109380A3F /* CellularNetworkMonitor.swift */,
+				2E4502E3AB7E6822D0300FBD /* MiniCPMRallyVisionInferencer.swift */,
+				9AB6DE19B3627BDA528A46E2 /* ModelBackedRallyClipEvaluator.swift */,
+				A70448FC0A30E422E314C603 /* VisionModelStore.swift */,
+				1321C8137E313BABE88A93E1 /* VisionModelTypes.swift */,
+				36DB5AE1A4020AE7CD5B5DA3 /* MTMD */,
+			);
+			path = AIAssist;
+			sourceTree = "<group>";
+		};
 		C3F6BD651E4DC75154228756 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
 				6BBA2B3EE5E54308FA91F07C /* HardCourtTheme.swift */,
 			);
 			path = Theme;
+			sourceTree = "<group>";
+		};
+		CC42A6CA462B7A9D85D862D2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E46B94C088256FAC60A221D9 /* llama.xcframework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D15DDE67DB59D7EFBFF3A44A /* Models */ = {
@@ -213,6 +302,7 @@
 			isa = PBXGroup;
 			children = (
 				145F6DF3B791ADDE85F1E9A0 /* Info.plist */,
+				B565B1FDAA6B0A7ED8070EA3 /* AIAssist */,
 				04FA650670204E453A4FBCD5 /* App */,
 				66D9482198EC466944DC982B /* Components */,
 				D15DDE67DB59D7EFBFF3A44A /* Models */,
@@ -253,6 +343,8 @@
 			buildPhases = (
 				42BDEED8AC708093E1AD2C59 /* Sources */,
 				AEB097AAE4761542AEF7CACB /* Resources */,
+				AABAABE78258339BD0979350 /* Frameworks */,
+				47D1F8B6F74E2A50AD01E74E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -326,14 +418,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				23884E0C86945FEF94C649AF /* AIAssistSession.swift in Sources */,
+				4A79F7D47F44DD0DB6C7672F /* AIAssistViews.swift in Sources */,
 				C314D7D83AE2113EF1A549DC /* AppLocalization.swift in Sources */,
 				0E92CEB4D8EE601EC317AF4E /* AppSessionStore.swift in Sources */,
 				CDE4E9DD212C1CF7EB140BB4 /* AppSettingsStore.swift in Sources */,
 				98EAD175D9689685334A18B7 /* BackgroundSplitSupport.swift in Sources */,
+				5AB3123B526994E78EA4B762 /* CellularNetworkMonitor.swift in Sources */,
 				D722C81D635DC7DCABAA5703 /* CorrectionEditorView.swift in Sources */,
 				A94B3BBF1375AD75FFB03026 /* HardCourtTheme.swift in Sources */,
 				31408496946F26E4DED9AA3C /* LibraryImportView.swift in Sources */,
 				5ED77FE0D6DDD86656AAC328 /* LibraryModels.swift in Sources */,
+				2603E7730D1F9E98CD3F525C /* MBMtmd.mm in Sources */,
+				0AF952DE150842F73078AED7 /* MiniCPMRallyVisionInferencer.swift in Sources */,
+				3BB9E2B054E12A6D460F2099 /* ModelBackedRallyClipEvaluator.swift in Sources */,
 				864A471286DCA3F526CF859A /* OfflineProcessingView.swift in Sources */,
 				08D0097480A03512E5D31354 /* OnsetRallySegmenter.swift in Sources */,
 				DB46313B9FF19F4CD193759C /* Rally.swift in Sources */,
@@ -349,6 +447,9 @@
 				C45E7A2AAEFCA1CBD5308733 /* TennisRallyApp.swift in Sources */,
 				A916AFDE9DA1680E376E6FB7 /* TrimTimelineMapper.swift in Sources */,
 				EBC7A2C80C81A99FDB92758A /* VideoAudioExtractor.swift in Sources */,
+				C92E9FA8094BD25535BE1C02 /* VisionModelDetailView.swift in Sources */,
+				014AA914E6A33B15131100D9 /* VisionModelStore.swift in Sources */,
+				782F9233B0415DDF885D9B12 /* VisionModelTypes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,11 +457,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C37E9E1454A76C37C9660294 /* AIAssistSessionTests.swift in Sources */,
 				3074CC871BD2C89047A2A82C /* AppLocalizationTests.swift in Sources */,
 				E9F39DBD221F69F31366D3A7 /* AppSettingsStoreTests.swift in Sources */,
 				7947B1ED94E7662586961F03 /* OnsetRallySegmenterTests.swift in Sources */,
 				27DCD49E81102B2F2151751D /* RallyEditingTests.swift in Sources */,
 				9122409FABDEB2333FE39908 /* RallyPlaybackTests.swift in Sources */,
+				D33C5C13F5608D66351DA605 /* VisionModelStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,9 +593,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"Vendor\"",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/TennisRally/AIAssist/MTMD";
 				INFOPLIST_FILE = TennisRally/Info.plist;
 				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "ai.tennismrally.rally-split";
 				INFOPLIST_KEY_CFBundleDisplayName = TennisRally;
@@ -506,8 +615,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = "$(inherited) -lc++";
 				PRODUCT_BUNDLE_IDENTIFIER = ai.tennismrally.app;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "TennisRally/AIAssist/MTMD/TennisRally-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -516,9 +627,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"Vendor\"",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/TennisRally/AIAssist/MTMD";
 				INFOPLIST_FILE = TennisRally/Info.plist;
 				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "ai.tennismrally.rally-split";
 				INFOPLIST_KEY_CFBundleDisplayName = TennisRally;
@@ -532,8 +649,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = "$(inherited) -lc++";
 				PRODUCT_BUNDLE_IDENTIFIER = ai.tennismrally.app;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "TennisRally/AIAssist/MTMD/TennisRally-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
