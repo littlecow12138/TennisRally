@@ -23,6 +23,7 @@
 		7947B1ED94E7662586961F03 /* OnsetRallySegmenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11D086C97275CFEDB14D40E2 /* OnsetRallySegmenterTests.swift */; };
 		864A471286DCA3F526CF859A /* OfflineProcessingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4EC2D88F5C5A6286D463F5F /* OfflineProcessingView.swift */; };
 		9033C61A2E9F90642EFCB98C /* RallySegmentationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2A0ADD33B1ABDF55DCCB2F /* RallySegmentationService.swift */; };
+		98EAD175D9689685334A18B7 /* BackgroundSplitSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801F0077632113E0871D7891 /* BackgroundSplitSupport.swift */; };
 		A916AFDE9DA1680E376E6FB7 /* TrimTimelineMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F43FC315885126120CB5883 /* TrimTimelineMapper.swift */; };
 		A94B3BBF1375AD75FFB03026 /* HardCourtTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBA2B3EE5E54308FA91F07C /* HardCourtTheme.swift */; };
 		C0FD1C85DA5505E6E67A6CC9 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE514CD4E4CFECD6C89DC16 /* RootTabView.swift */; };
@@ -66,6 +67,7 @@
 		72E12B234E181DBBC2619AA6 /* AppLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalization.swift; sourceTree = "<group>"; };
 		74833D13935FC302193370B3 /* LibraryImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryImportView.swift; sourceTree = "<group>"; };
 		801158595B8EE253AD1062EA /* AppLocalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalizationTests.swift; sourceTree = "<group>"; };
+		801F0077632113E0871D7891 /* BackgroundSplitSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundSplitSupport.swift; sourceTree = "<group>"; };
 		85E398E5BED5C0632D2B44F1 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		AE3E71B56C7EAF5E1CBB23D6 /* SharedUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUI.swift; sourceTree = "<group>"; };
 		D32B9056435862D84A07FBC4 /* Rally.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rally.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 		963FB25295F286AA702BEBE4 /* Segmentation */ = {
 			isa = PBXGroup;
 			children = (
+				801F0077632113E0871D7891 /* BackgroundSplitSupport.swift */,
 				E80BF8B40FEF4017A2EAC022 /* OnsetRallySegmenter.swift */,
 				1B2A0ADD33B1ABDF55DCCB2F /* RallySegmentationService.swift */,
 				3B3FD696CA5EFCE17F2C426D /* VideoAudioExtractor.swift */,
@@ -306,6 +309,7 @@
 				C314D7D83AE2113EF1A549DC /* AppLocalization.swift in Sources */,
 				0E92CEB4D8EE601EC317AF4E /* AppSessionStore.swift in Sources */,
 				CDE4E9DD212C1CF7EB140BB4 /* AppSettingsStore.swift in Sources */,
+				98EAD175D9689685334A18B7 /* BackgroundSplitSupport.swift in Sources */,
 				D722C81D635DC7DCABAA5703 /* CorrectionEditorView.swift in Sources */,
 				A94B3BBF1375AD75FFB03026 /* HardCourtTheme.swift in Sources */,
 				31408496946F26E4DED9AA3C /* LibraryImportView.swift in Sources */,
@@ -466,9 +470,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TennisRally/Info.plist;
+				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "ai.tennismrally.rally-split";
 				INFOPLIST_KEY_CFBundleDisplayName = TennisRally;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Import tennis practice videos to split into rallies offline.";
+				INFOPLIST_KEY_UIBackgroundModes = processing;
 				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -490,9 +496,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TennisRally/Info.plist;
+				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = "ai.tennismrally.rally-split";
 				INFOPLIST_KEY_CFBundleDisplayName = TennisRally;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Import tennis practice videos to split into rallies offline.";
+				INFOPLIST_KEY_UIBackgroundModes = processing;
 				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

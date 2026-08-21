@@ -90,13 +90,33 @@ final class TrimTimelineMapperTests: XCTestCase {
 
 @MainActor
 final class SessionFlowTests: XCTestCase {
-    func testImportStartsProcessingAndSwitchesToProcessTab() {
+    func testImportDemoStartsProcessingAndSwitchesToProcessTab() {
         let store = AppSessionStore(seedDemoData: false)
         store.importDemoVideo(named: "Saturday practice", duration: 724)
         XCTAssertEqual(store.videos.count, 1)
         XCTAssertEqual(store.videos[0].status, .processing)
         XCTAssertEqual(store.selectedTab, .process)
         XCTAssertNotNil(store.processing)
+    }
+
+    func testPrepareProcessingOpensProcessTabWithoutStarting() {
+        let store = AppSessionStore(seedDemoData: false)
+        let id = UUID()
+        store.videos = [
+            LibraryVideo(
+                id: id,
+                title: "Clip",
+                duration: 120,
+                status: .notProcessed,
+                filename: "clip.mov",
+                localURL: URL(fileURLWithPath: "/tmp/clip.mov")
+            )
+        ]
+        store.prepareProcessing(for: id)
+        XCTAssertEqual(store.selectedTab, .process)
+        XCTAssertEqual(store.activeVideoID, id)
+        XCTAssertNil(store.processing)
+        XCTAssertEqual(store.videos[0].status, .notProcessed)
     }
 
     func testCompletingProcessingProducesRalliesAndSwitchesTab() {

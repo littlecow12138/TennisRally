@@ -1,5 +1,7 @@
+import AVFoundation
 import Foundation
 import SwiftUI
+import UIKit
 
 @MainActor
 final class AppSessionStore: ObservableObject {
@@ -15,6 +17,7 @@ final class AppSessionStore: ObservableObject {
     @Published var alertMessage: String?
 
     private var processingTask: Task<Void, Never>?
+    private var backgroundTaskID = UIBackgroundTaskIdentifier.invalid
 
     init(seedDemoData: Bool = false) {
         if seedDemoData {
@@ -44,13 +47,16 @@ final class AppSessionStore: ObservableObject {
 
     // MARK: - Import
 
+    /// Copies the file into the app sandbox and lists it. Does **not** start split —
+    /// caller taps Start on the Process tab (or the library row action).
     func importVideo(from sourceURL: URL, displayName: String? = nil) {
         do {
             let stored = try Self.copyIntoDocuments(sourceURL: sourceURL, preferredName: displayName)
             let title = displayName.map { Self.stripExtension($0) }
                 ?? Self.stripExtension(sourceURL.lastPathComponent)
+            let videoID = UUID()
             let video = LibraryVideo(
-                id: UUID(),
+                id: videoID,
                 title: title,
                 duration: 0,
                 status: .notProcessed,
@@ -59,12 +65,19 @@ final class AppSessionStore: ObservableObject {
                 lastErrorMessage: nil
             )
             videos.insert(video, at: 0)
-            activeVideoID = video.id
-            rallies = []
-            startProcessing(for: video.id)
+            activeVideoID = videoID
+            selectedTab = .library
+            Task { await self.refreshDuration(for: videoID, url: stored) }
         } catch {
             alertMessage = String(localized: "error.decode_failed")
         }
+    }
+
+    /// Opens Process tab for an imported clip without starting work yet.
+    func prepareProcessing(for videoID: UUID) {
+        guard videos.contains(where: { $0.id == videoID }) else { return }
+        activeVideoID = videoID
+        selectedTab = .process
     }
 
     /// Legacy demo helper used by unit tests.
@@ -101,6 +114,7 @@ final class AppSessionStore: ObservableObject {
         }
 
         processingTask?.cancel()
+        BackgroundSplitSupport.endTask(&backgroundTaskID)
         videos[index].status = .processing
         videos[index].lastErrorMessage = nil
         activeVideoID = id
@@ -116,15 +130,23 @@ final class AppSessionStore: ObservableObject {
         selectedTab = .process
 
         let filename = videos[index].filename
+        let title = videos[index].title
+        backgroundTaskID = BackgroundSplitSupport.beginExpirationAwareTask()
+        BackgroundSplitSupport.scheduleProcessingHint()
+
         processingTask = Task { [weak self] in
             guard let self else { return }
+            await BackgroundSplitSupport.requestNotificationPermissionIfNeeded()
             do {
                 let result = try await RallySegmentationService.segmentVideo(at: url) { [weak self] value in
                     Task { @MainActor in
                         self?.bumpProcessingProgress(to: value)
                     }
                 }
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled else {
+                    await MainActor.run { BackgroundSplitSupport.endTask(&self.backgroundTaskID) }
+                    return
+                }
                 await MainActor.run {
                     self.finishProcessing(
                         videoID: id,
@@ -132,12 +154,27 @@ final class AppSessionStore: ObservableObject {
                         segments: result.segments,
                         filename: filename
                     )
+                    BackgroundSplitSupport.endTask(&self.backgroundTaskID)
                 }
+                let count = result.segments.count
+                await BackgroundSplitSupport.notifySplitFinished(
+                    title: String(localized: "notify.split_done_title"),
+                    body: String(
+                        format: NSLocalizedString("notify.split_done_body", comment: ""),
+                        locale: .current,
+                        title as CVarArg,
+                        count as CVarArg
+                    )
+                )
             } catch {
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled else {
+                    await MainActor.run { BackgroundSplitSupport.endTask(&self.backgroundTaskID) }
+                    return
+                }
                 let mapped = RallySegmentationError.from(error)
                 await MainActor.run {
                     self.failProcessing(videoID: id, error: mapped)
+                    BackgroundSplitSupport.endTask(&self.backgroundTaskID)
                 }
             }
         }
@@ -167,6 +204,7 @@ final class AppSessionStore: ObservableObject {
     func cancelProcessing() {
         processingTask?.cancel()
         processingTask = nil
+        BackgroundSplitSupport.endTask(&backgroundTaskID)
         if let job = processing,
            let index = videos.firstIndex(where: { $0.id == job.videoID }) {
             videos[index].status = .notProcessed
@@ -174,6 +212,19 @@ final class AppSessionStore: ObservableObject {
         processing = nil
         rallies = []
         selectedTab = .library
+    }
+
+    private func refreshDuration(for videoID: UUID, url: URL) async {
+        let asset = AVURLAsset(url: url)
+        let seconds: TimeInterval
+        do {
+            let duration = try await asset.load(.duration)
+            seconds = duration.seconds.isFinite ? max(0, duration.seconds) : 0
+        } catch {
+            seconds = 0
+        }
+        guard let index = videos.firstIndex(where: { $0.id == videoID }) else { return }
+        videos[index].duration = seconds
     }
 
     private func finishProcessing(

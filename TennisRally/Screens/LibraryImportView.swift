@@ -167,7 +167,7 @@ struct LibraryImportView: View {
                 store.alertMessage = video.lastErrorMessage ?? String(localized: "error.decode_failed")
             case .notProcessed:
                 if video.localURL != nil {
-                    store.startProcessing(for: video.id)
+                    store.prepareProcessing(for: video.id)
                 } else {
                     store.selectedTab = .process
                 }

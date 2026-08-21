@@ -5,6 +5,10 @@ struct TennisRallyApp: App {
     @StateObject private var store = AppSessionStore()
     @StateObject private var settings = AppSettingsStore()
 
+    init() {
+        BackgroundSplitSupport.register()
+    }
+
     var body: some Scene {
         WindowGroup {
             RootTabView()
