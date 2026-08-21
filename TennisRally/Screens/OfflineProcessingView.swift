@@ -13,6 +13,19 @@ struct OfflineProcessingView: View {
                 idleContent
             }
         }
+        .alert(
+            String(localized: "error.title"),
+            isPresented: Binding(
+                get: { store.alertMessage != nil && store.selectedTab == .process },
+                set: { if !$0 { store.alertMessage = nil } }
+            )
+        ) {
+            Button(String(localized: "common.ok"), role: .cancel) {
+                store.alertMessage = nil
+            }
+        } message: {
+            Text(store.alertMessage ?? "")
+        }
     }
 
     private func processingContent(_ job: ProcessingState) -> some View {
@@ -58,7 +71,7 @@ struct OfflineProcessingView: View {
                     }
                     .padding(.top, 8)
 
-                    Text("process.detecting")
+                    Text(AppLocalization.text(job.statusMessageKey, locale: locale))
                         .font(.system(size: 17, weight: .medium))
                         .foregroundStyle(HardCourt.text)
                     Text("process.offline")
@@ -73,21 +86,11 @@ struct OfflineProcessingView: View {
                         .font(.system(size: 13))
                         .foregroundStyle(HardCourt.muted)
 
-                    HStack(spacing: 12) {
-                        Button("process.cancel") {
-                            store.cancelProcessing()
-                        }
-                        .foregroundStyle(HardCourt.danger)
-                        .font(.system(size: 16, weight: .semibold))
-
-                        Button {
-                            store.completeProcessing()
-                        } label: {
-                            Text("process.demo_finish")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(HardCourt.accent)
-                        }
+                    Button("process.cancel") {
+                        store.cancelProcessing()
                     }
+                    .foregroundStyle(HardCourt.danger)
+                    .font(.system(size: 16, weight: .semibold))
                     .padding(.top, 28)
                 }
                 .padding(.top, 20)
@@ -111,21 +114,28 @@ struct OfflineProcessingView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 28)
 
-            if let video = store.activeVideo, video.status != .processed {
-                PrimaryButton(titleKey: "process.start", systemImage: "bolt.horizontal.circle") {
-                    store.processing = ProcessingState(
-                        videoID: video.id,
-                        filename: video.filename,
-                        progress: 0.62,
-                        estimatedClipCount: 18,
-                        detectedClipCount: 7
-                    )
-                    if let index = store.videos.firstIndex(where: { $0.id == video.id }) {
-                        store.videos[index].status = .processing
-                    }
+            if let video = store.activeVideo {
+                if video.status == .failed {
+                    Text(video.lastErrorMessage ?? String(localized: "error.decode_failed"))
+                        .font(.system(size: 13))
+                        .foregroundStyle(HardCourt.danger)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 8)
+
+                if video.localURL != nil, video.status != .processed {
+                    PrimaryButton(titleKey: "process.start", systemImage: "bolt.horizontal.circle") {
+                        store.startProcessing(for: video.id)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                } else {
+                    Button("tab.library") {
+                        store.selectedTab = .library
+                    }
+                    .foregroundStyle(HardCourt.accent)
+                    .font(.system(size: 16, weight: .semibold))
+                }
             } else {
                 Button("tab.library") {
                     store.selectedTab = .library

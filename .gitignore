@@ -6,3 +6,6 @@ xcuserdata/
 *.moved-aside
 *.xccheckout
 *.xcscmblueprint
+build_test*.log
+__pycache__/
+*.pyc

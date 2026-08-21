@@ -19,9 +19,14 @@ struct CorrectionEditorView: View {
             CourtBackdrop()
             VStack(spacing: 16) {
                 nav
-                VideoPlaceholder(height: 220)
-                    .padding(.horizontal, 16)
-                playbackRow
+                RallyClipPreviewView(
+                    source: store.videoSourceForActiveClip,
+                    start: draft.start,
+                    end: draft.end,
+                    height: 220,
+                    showsScrubber: true
+                )
+                .padding(.horizontal, 16)
                 timelineVisual
                 boundReadout
                 actions
@@ -60,20 +65,6 @@ struct CorrectionEditorView: View {
             .foregroundStyle(HardCourt.accent)
         }
         .padding(.horizontal, 20)
-    }
-
-    private var playbackRow: some View {
-        HStack {
-            Image(systemName: "play.fill")
-                .foregroundStyle(HardCourt.text)
-            Spacer()
-            Text(String(format: "%.1f", playhead))
-                .font(.system(size: 15, weight: .medium, design: .monospaced))
-                .foregroundStyle(HardCourt.text)
-            Spacer()
-            Color.clear.frame(width: 16)
-        }
-        .padding(.horizontal, 24)
     }
 
     private var timelineVisual: some View {
