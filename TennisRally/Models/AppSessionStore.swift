@@ -45,6 +45,11 @@ final class AppSessionStore: ObservableObject {
         rallies.first { $0.id == reviewingRallyID }
     }
 
+    /// Local file used for rally preview / interval playback on the active video.
+    var videoSourceForActiveClip: RallyVideoSource {
+        RallyVideoSource.resolve(localURL: activeVideo?.localURL)
+    }
+
     // MARK: - Import
 
     /// Copies the file into the app sandbox and lists it. Does **not** start split —

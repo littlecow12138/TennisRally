@@ -93,6 +93,12 @@ struct RallyTimelineView: View {
                         store.openCorrection(for: rally)
                     } label: {
                         HStack(spacing: 10) {
+                            RallyThumbnailView(
+                                source: store.videoSourceForActiveClip,
+                                time: rally.start,
+                                size: CGSize(width: 56, height: 36)
+                            )
+
                             VStack(alignment: .leading, spacing: 3) {
                                 Text(AppLocalization.format("common.rally", locale: locale, rally.index as CVarArg))
                                     .font(.system(size: 15, weight: .semibold))
