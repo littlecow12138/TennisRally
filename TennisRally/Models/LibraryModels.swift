@@ -57,4 +57,5 @@ enum AppTab: String, CaseIterable, Identifiable {
 
 enum LibraryRoute: Hashable {
     case settings
+    case visionModel
 }

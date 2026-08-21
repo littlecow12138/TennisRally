@@ -27,5 +27,13 @@ final class AppLocalizationTests: XCTestCase {
             AppLocalization.format("process.clip_progress", locale: zh, 7 as CVarArg, 18 as CVarArg),
             "片段 7 / 约 18"
         )
+        XCTAssertEqual(
+            AppLocalization.text("ai.assist.entry", locale: zh),
+            "AI 辅助"
+        )
+        XCTAssertEqual(
+            AppLocalization.text("ai.verdict.needs_review", locale: Locale(identifier: "en")),
+            "Needs review"
+        )
     }
 }
