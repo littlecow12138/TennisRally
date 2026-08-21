@@ -8,13 +8,10 @@ struct TennisRallyApp: App {
     @StateObject private var assistSession: AIAssistSession
 
     init() {
+        BackgroundSplitSupport.register()
         let vision = VisionModelStore()
         _visionModel = StateObject(wrappedValue: vision)
         _assistSession = StateObject(wrappedValue: AIAssistSession(modelStore: vision))
-    }
-
-    init() {
-        BackgroundSplitSupport.register()
     }
 
     var body: some Scene {
