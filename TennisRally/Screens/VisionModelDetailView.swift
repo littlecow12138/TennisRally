@@ -46,7 +46,7 @@ struct VisionModelDetailView: View {
                 Text("|")
                     .foregroundStyle(HardCourt.muted)
                 Text(statusCaption)
-                    .foregroundStyle(HardCourt.muted)
+                    .foregroundStyle(statusCaptionColor)
             }
             .font(.system(size: 14, weight: .medium))
         }
@@ -105,17 +105,29 @@ struct VisionModelDetailView: View {
     @ViewBuilder
     private var actionSection: some View {
         switch visionModel.status {
-        case .notDownloaded, .failed:
+        case .notDownloaded:
             PrimaryButton(titleKey: "ai.model.download", systemImage: "arrow.down.circle.fill") {
                 Task { await visionModel.startDownload() }
             }
-            if network.isConstrainedOrExpensive {
-                Text("ai.model.cellular_warning")
-                    .font(.system(size: 12))
+            cellularWarningIfNeeded
+
+        case let .connecting(downloaded, total):
+            VStack(spacing: 12) {
+                ProgressView(value: 0)
+                    .tint(HardCourt.accent)
+                Text(AppLocalization.text("ai.model.connecting", locale: locale))
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(HardCourt.text)
+                Text(progressLabel(downloaded: downloaded, total: total))
+                    .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(HardCourt.muted)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
+                Button("ai.model.cancel") {
+                    Task { await visionModel.cancelDownload() }
+                }
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(HardCourt.danger)
             }
+            cellularWarningIfNeeded
 
         case let .downloading(progress, downloaded, total):
             VStack(spacing: 12) {
@@ -129,6 +141,35 @@ struct VisionModelDetailView: View {
                 }
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(HardCourt.danger)
+            }
+            cellularWarningIfNeeded
+
+        case let .stalled(downloaded, total):
+            VStack(spacing: 12) {
+                ProgressView(value: 0)
+                    .tint(HardCourt.muted)
+                stalledBanner
+                Text(progressLabel(downloaded: downloaded, total: total))
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(HardCourt.muted)
+                PrimaryButton(titleKey: "ai.model.retry", systemImage: "arrow.clockwise") {
+                    Task { await visionModel.retryDownload() }
+                }
+                Button("ai.model.cancel") {
+                    Task { await visionModel.cancelDownload() }
+                }
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(HardCourt.danger)
+            }
+            cellularWarningIfNeeded
+
+        case let .failed(failure):
+            VStack(spacing: 12) {
+                failedPanel(failure: failure)
+                PrimaryButton(titleKey: "ai.model.retry_download", systemImage: "arrow.clockwise.circle.fill") {
+                    Task { await visionModel.retryDownload() }
+                }
+                cellularWarningIfNeeded
             }
 
         case .ready:
@@ -157,10 +198,71 @@ struct VisionModelDetailView: View {
         }
     }
 
+    private var stalledBanner: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("ai.model.stalled.title")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(HardCourt.text)
+            Text("ai.model.stalled.body")
+                .font(.system(size: 13))
+                .foregroundStyle(HardCourt.muted)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(HardCourt.bg.opacity(0.55), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(HardCourt.accent.opacity(0.45), lineWidth: 1)
+        )
+    }
+
+    private func failedPanel(failure: VisionModelDownloadFailure) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 22))
+                .foregroundStyle(HardCourt.danger)
+            VStack(alignment: .leading, spacing: 6) {
+                Text("ai.model.failed.title")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(HardCourt.text)
+                Text(AppLocalization.text(failure.bodyLocalizationKey, locale: locale))
+                    .font(.system(size: 14))
+                    .foregroundStyle(HardCourt.muted)
+            }
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(HardCourt.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .strokeBorder(HardCourt.danger.opacity(0.35), lineWidth: 1)
+        )
+    }
+
+    @ViewBuilder
+    private var cellularWarningIfNeeded: some View {
+        if network.isConstrainedOrExpensive {
+            Text("ai.model.cellular_warning")
+                .font(.system(size: 12))
+                .foregroundStyle(HardCourt.muted)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+        }
+    }
+
     private var statusCaption: String {
         switch visionModel.status {
         case .notDownloaded, .failed:
             return AppLocalization.text("ai.model.not_on_device", locale: locale)
+        case .connecting:
+            return AppLocalization.format(
+                "ai.model.connecting_percent",
+                locale: locale,
+                0 as CVarArg
+            )
+        case .stalled:
+            return AppLocalization.text("ai.model.stalled.caption", locale: locale)
         case .downloading:
             return AppLocalization.format(
                 "ai.model.downloading_percent",
@@ -169,6 +271,15 @@ struct VisionModelDetailView: View {
             )
         case .ready:
             return AppLocalization.text("ai.model.on_device", locale: locale)
+        }
+    }
+
+    private var statusCaptionColor: Color {
+        switch visionModel.status {
+        case .stalled, .failed:
+            return HardCourt.danger
+        default:
+            return HardCourt.muted
         }
     }
 

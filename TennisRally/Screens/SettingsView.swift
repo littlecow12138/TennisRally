@@ -71,30 +71,7 @@ struct SettingsView: View {
     private var aiAssistSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             sectionHeader("settings.ai_assist")
-            NavigationLink(value: LibraryRoute.visionModel) {
-                HStack(spacing: 12) {
-                    Image(systemName: "cpu")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(HardCourt.accent)
-                        .frame(width: 28)
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text("ai.model.title")
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundStyle(HardCourt.text)
-                        Text(visionModelSubtitle)
-                            .font(.system(size: 13))
-                            .foregroundStyle(HardCourt.muted)
-                    }
-                    Spacer(minLength: 8)
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(HardCourt.muted)
-                }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 14)
-                .background(HardCourt.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-            }
-            .buttonStyle(.plain)
+            visionModelRow
 
             Text("ai.privacy.footer")
                 .font(.system(size: 12))
@@ -103,26 +80,81 @@ struct SettingsView: View {
         }
     }
 
+    @ViewBuilder
+    private var visionModelRow: some View {
+        let content = visionModelRowContent
+        if case .failed = visionModel.status {
+            Button {
+                Task { await visionModel.retryDownload() }
+            } label: {
+                content
+            }
+            .buttonStyle(.plain)
+        } else {
+            NavigationLink(value: LibraryRoute.visionModel) {
+                content
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private var visionModelRowContent: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "cpu")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(HardCourt.accent)
+                .frame(width: 28)
+            VStack(alignment: .leading, spacing: 3) {
+                Text("ai.model.title")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(HardCourt.text)
+                Text(visionModelSubtitle)
+                    .font(.system(size: 13))
+                    .foregroundStyle(visionModelSubtitleColor)
+            }
+            Spacer(minLength: 8)
+            Image(systemName: "chevron.right")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(HardCourt.muted)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 14)
+        .background(HardCourt.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
     private var visionModelSubtitle: String {
         switch visionModel.status {
-        case .notDownloaded, .failed:
+        case .notDownloaded:
             return AppLocalization.format(
                 "ai.model.status.not_downloaded_fmt",
                 locale: locale,
                 visionModel.catalog.approximateSizeLabel as CVarArg
             )
-        case .downloading:
+        case .connecting, .downloading:
             return AppLocalization.format(
                 "ai.model.status.downloading_fmt",
                 locale: locale,
                 visionModel.downloadProgressPercent as CVarArg
             )
+        case .stalled:
+            return AppLocalization.text("ai.model.status.stalled_fmt", locale: locale)
+        case .failed:
+            return AppLocalization.text("ai.model.status.failed_fmt", locale: locale)
         case .ready:
             return AppLocalization.format(
                 "ai.model.status.ready_fmt",
                 locale: locale,
                 visionModel.catalog.displayName as CVarArg
             )
+        }
+    }
+
+    private var visionModelSubtitleColor: Color {
+        switch visionModel.status {
+        case .stalled, .failed:
+            return HardCourt.danger
+        default:
+            return HardCourt.muted
         }
     }
 
