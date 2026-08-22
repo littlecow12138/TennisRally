@@ -9,3 +9,13 @@ xcuserdata/
 build_test*.log
 __pycache__/
 *.pyc
+
+# Local agent / Multica runtime (keep .cursor/rules tracked)
+.agent_context/
+.cursor/skills/
+.multica/
+.opencode/
+AGENTS.md
+
+# Local design comps not yet promoted into the app
+DesignAssets/settings-LCOW-9/
