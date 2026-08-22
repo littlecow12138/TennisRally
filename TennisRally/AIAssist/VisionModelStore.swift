@@ -9,10 +9,13 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
         static let readyFlag = "ai.vision_model.ready"
     }
 
+    static let defaultStallThresholdSeconds: TimeInterval = 25
+
     let catalog: VisionModelCatalog
     let modelsDirectory: URL
     let llmModelURL: URL
     let mmprojModelURL: URL
+    let stallThresholdSeconds: TimeInterval
 
     /// Primary GGUF path (LLM). Kept for existing call sites / tests.
     var modelFileURL: URL { llmModelURL }
@@ -24,6 +27,7 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
     private let downloader: VisionModelDownloading
     private let idleTimerController: IdleTimerControlling
     private var downloadTask: Task<Void, Never>?
+    private var stallMonitorTask: Task<Void, Never>?
 
     var isReady: Bool {
         if case .ready = status { return true }
@@ -32,10 +36,14 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
 
     var settingsSubtitleKey: String {
         switch status {
-        case .notDownloaded, .failed:
+        case .notDownloaded:
             return "ai.model.status.not_downloaded"
-        case .downloading:
+        case .connecting, .downloading:
             return "ai.model.status.downloading"
+        case .stalled:
+            return "ai.model.status.stalled"
+        case .failed:
+            return "ai.model.status.failed"
         case .ready:
             return "ai.model.status.ready"
         }
@@ -51,13 +59,15 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
         defaults: UserDefaults = .standard,
         fileManager: FileManager = .default,
         downloader: VisionModelDownloading = URLSessionVisionModelDownloader(),
-        idleTimerController: IdleTimerControlling = SystemIdleTimerController()
+        idleTimerController: IdleTimerControlling = SystemIdleTimerController(),
+        stallThresholdSeconds: TimeInterval = VisionModelStore.defaultStallThresholdSeconds
     ) {
         self.catalog = catalog
         self.defaults = defaults
         self.fileManager = fileManager
         self.downloader = downloader
         self.idleTimerController = idleTimerController
+        self.stallThresholdSeconds = stallThresholdSeconds
 
         let directory = modelsDirectory
             ?? fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
@@ -80,15 +90,17 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
     }
 
     func startDownload() async {
-        guard !status.isDownloading else { return }
+        guard !status.isDownloadSessionActive else { return }
+        if case .stalled = status { return }
         if filesPresentOnDisk() {
             status = .ready
             defaults.set(true, forKey: Keys.readyFlag)
             return
         }
 
-        status = .downloading(progress: 0, downloadedBytes: 0, totalBytes: catalog.approximateBytes)
+        status = .connecting(downloadedBytes: 0, totalBytes: catalog.approximateBytes)
         idleTimerController.setIdleTimerDisabled(true)
+        beginStallMonitor()
 
         downloadTask = Task { [weak self] in
             guard let self else { return }
@@ -107,18 +119,27 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
                     try await self.downloader.download(from: artifact.remoteURL, to: partial) { [weak self] downloaded, total in
                         Task { @MainActor in
                             guard let self else { return }
-                            guard case .downloading = self.status else { return }
+                            guard self.status.isInDownloadFlow else { return }
                             let artifactExpected = total > 0 ? total : (self.catalog.approximateBytes / Int64(artifactCount))
                             let overallExpected = self.catalog.approximateBytes
                             let overallDownloaded = baseCompleted + downloaded
                             let fraction = overallExpected > 0
                                 ? Double(overallDownloaded) / Double(overallExpected)
                                 : (Double(index) + Double(downloaded) / Double(max(artifactExpected, 1))) / Double(artifactCount)
-                            self.status = .downloading(
-                                progress: min(0.99, max(0, fraction)),
-                                downloadedBytes: overallDownloaded,
-                                totalBytes: overallExpected
-                            )
+
+                            if overallDownloaded > 0 {
+                                self.cancelStallMonitor()
+                                self.status = .downloading(
+                                    progress: min(0.99, max(0, fraction)),
+                                    downloadedBytes: overallDownloaded,
+                                    totalBytes: overallExpected
+                                )
+                            } else if case .connecting = self.status {
+                                self.status = .connecting(
+                                    downloadedBytes: overallDownloaded,
+                                    totalBytes: overallExpected
+                                )
+                            }
                         }
                     }
                     try? self.fileManager.removeItem(at: destination)
@@ -127,19 +148,24 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
                         ?? (self.catalog.approximateBytes / Int64(artifactCount))
                     completedBytes += artifactBytes
                 }
+                self.cancelStallMonitor()
                 self.status = .ready
                 self.defaults.set(true, forKey: Keys.readyFlag)
             } catch is CancellationError {
+                self.cancelStallMonitor()
                 self.cleanupPartials()
-                if !self.filesPresentOnDisk() {
+                if case .stalled = self.status {
+                    // Stall monitor cancelled the underlying download intentionally.
+                } else if !self.filesPresentOnDisk() {
                     self.removeModelFiles()
                     self.status = .notDownloaded
                     self.defaults.set(false, forKey: Keys.readyFlag)
                 }
             } catch {
+                self.cancelStallMonitor()
                 self.cleanupPartials()
                 self.removeModelFiles()
-                self.status = .failed(message: error.localizedDescription)
+                self.status = .failed(VisionModelDownloadFailure.map(from: error))
                 self.defaults.set(false, forKey: Keys.readyFlag)
             }
             self.idleTimerController.setIdleTimerDisabled(false)
@@ -149,8 +175,24 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
         await downloadTask?.value
     }
 
+    func retryDownload() async {
+        switch status {
+        case .stalled, .failed:
+            break
+        default:
+            return
+        }
+        cancelStallMonitor()
+        cleanupPartials()
+        removeModelFiles()
+        status = .notDownloaded
+        defaults.set(false, forKey: Keys.readyFlag)
+        await startDownload()
+    }
+
     func cancelDownload() async {
-        guard status.isDownloading else { return }
+        guard status.isInDownloadFlow else { return }
+        cancelStallMonitor()
         downloader.cancel()
         downloadTask?.cancel()
         await downloadTask?.value
@@ -164,7 +206,7 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
     }
 
     func removeModel() {
-        guard !status.isDownloading else { return }
+        guard !status.isDownloadSessionActive else { return }
         removeModelFiles()
         cleanupPartials()
         status = .notDownloaded
@@ -172,9 +214,32 @@ final class VisionModelStore: ObservableObject, VisionModelLocating {
     }
 
     func redownload() async {
-        guard !status.isDownloading else { return }
+        guard !status.isDownloadSessionActive else { return }
         removeModel()
         await startDownload()
+    }
+
+    private func beginStallMonitor() {
+        cancelStallMonitor()
+        let threshold = stallThresholdSeconds
+        stallMonitorTask = Task { [weak self] in
+            let nanos = UInt64(threshold * 1_000_000_000)
+            try? await Task.sleep(nanoseconds: nanos)
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                guard let self else { return }
+                guard case let .connecting(downloaded, total) = self.status, downloaded == 0 else { return }
+                self.downloader.cancel()
+                self.downloadTask?.cancel()
+                self.status = .stalled(downloadedBytes: downloaded, totalBytes: total)
+                self.idleTimerController.setIdleTimerDisabled(false)
+            }
+        }
+    }
+
+    private func cancelStallMonitor() {
+        stallMonitorTask?.cancel()
+        stallMonitorTask = nil
     }
 
     private func filesPresentOnDisk() -> Bool {

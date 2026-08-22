@@ -39,22 +39,95 @@ struct VisionModelCatalog: Equatable, Sendable {
     }
 }
 
+enum VisionModelDownloadFailure: Equatable {
+    case network
+    case storage
+    case generic
+
+    var bodyLocalizationKey: String {
+        switch self {
+        case .network:
+            return "ai.model.failed.body.network"
+        case .storage:
+            return "ai.model.failed.body.storage"
+        case .generic:
+            return "ai.model.failed.body.generic"
+        }
+    }
+
+    static func map(from error: Error) -> VisionModelDownloadFailure {
+        let ns = error as NSError
+        if ns.domain == NSURLErrorDomain {
+            return .network
+        }
+        if ns.domain == NSCocoaErrorDomain,
+           ns.code == NSFileWriteOutOfSpaceError || ns.code == NSFileWriteNoPermissionError {
+            return .storage
+        }
+        if ns.domain == NSPOSIXErrorDomain, ns.code == Int(POSIXErrorCode.ENOSPC.rawValue) {
+            return .storage
+        }
+        return .generic
+    }
+}
+
 enum VisionModelStatus: Equatable {
     case notDownloaded
+    case connecting(downloadedBytes: Int64, totalBytes: Int64)
     case downloading(progress: Double, downloadedBytes: Int64, totalBytes: Int64)
+    case stalled(downloadedBytes: Int64, totalBytes: Int64)
     case ready
-    case failed(message: String)
+    case failed(VisionModelDownloadFailure)
+
+    var isDownloadSessionActive: Bool {
+        switch self {
+        case .connecting, .downloading:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isInDownloadFlow: Bool {
+        switch self {
+        case .connecting, .downloading, .stalled:
+            return true
+        default:
+            return false
+        }
+    }
 
     var isDownloading: Bool {
-        if case .downloading = self { return true }
-        return false
+        isDownloadSessionActive
     }
 
     var progressFraction: Double {
-        if case let .downloading(progress, _, _) = self {
+        switch self {
+        case let .downloading(progress, _, _):
             return min(1, max(0, progress))
+        case .connecting, .stalled:
+            return 0
+        default:
+            return 0
         }
-        return 0
+    }
+
+    var downloadedBytes: Int64 {
+        switch self {
+        case let .connecting(downloaded, _), let .stalled(downloaded, _), let .downloading(_, downloaded, _):
+            return downloaded
+        default:
+            return 0
+        }
+    }
+
+    var totalBytes: Int64 {
+        switch self {
+        case let .connecting(_, total), let .stalled(_, total), let .downloading(_, _, total):
+            return total
+        default:
+            return 0
+        }
     }
 }
 
