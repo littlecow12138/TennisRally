@@ -27,6 +27,12 @@ final class AppLocalizationTests: XCTestCase {
         XCTAssertEqual(AppLocalization.text("ai.model.stalled.title", locale: zh), "下载停滞")
         XCTAssertEqual(AppLocalization.text("ai.model.failed.title", locale: en), "Download failed")
         XCTAssertEqual(AppLocalization.text("ai.model.failed.title", locale: zh), "下载失败")
+        XCTAssertEqual(AppLocalization.text("ai.model.failed.caption", locale: en), "Failed")
+        XCTAssertEqual(AppLocalization.text("ai.model.failed.caption", locale: zh), "下载失败")
+        XCTAssertNotEqual(
+            AppLocalization.text("ai.model.failed.caption", locale: en),
+            AppLocalization.text("ai.model.not_on_device", locale: en)
+        )
         XCTAssertEqual(AppLocalization.text("ai.model.retry", locale: en), "Retry")
         XCTAssertEqual(AppLocalization.text("ai.model.retry", locale: zh), "重试")
         XCTAssertEqual(AppLocalization.text("ai.model.retry_download", locale: en), "Retry download")

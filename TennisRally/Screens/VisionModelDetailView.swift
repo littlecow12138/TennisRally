@@ -253,8 +253,10 @@ struct VisionModelDetailView: View {
 
     private var statusCaption: String {
         switch visionModel.status {
-        case .notDownloaded, .failed:
+        case .notDownloaded:
             return AppLocalization.text("ai.model.not_on_device", locale: locale)
+        case .failed:
+            return AppLocalization.text("ai.model.failed.caption", locale: locale)
         case .connecting:
             return AppLocalization.format(
                 "ai.model.connecting_percent",

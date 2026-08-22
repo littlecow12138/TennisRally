@@ -105,6 +105,7 @@
 "ai.model.stalled.body" = "No data received. Check Wi-Fi and try again.";
 "ai.model.stalled.caption" = "Stalled · 0%";
 "ai.model.failed.title" = "Download failed";
+"ai.model.failed.caption" = "Failed";
 "ai.model.failed.body.generic" = "Couldn't finish the download. Check your connection and free space, then retry.";
 "ai.model.failed.body.network" = "Couldn't reach the server. Check your connection and try again.";
 "ai.model.failed.body.storage" = "Not enough free space to save the model. Free up storage and try again.";

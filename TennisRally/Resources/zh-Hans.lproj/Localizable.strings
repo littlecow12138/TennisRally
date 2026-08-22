@@ -105,6 +105,7 @@
 "ai.model.stalled.body" = "未收到数据。请检查 Wi-Fi 后重试。";
 "ai.model.stalled.caption" = "已停滞 · 0%";
 "ai.model.failed.title" = "下载失败";
+"ai.model.failed.caption" = "下载失败";
 "ai.model.failed.body.generic" = "无法完成下载。请检查网络与可用空间后重试。";
 "ai.model.failed.body.network" = "无法连接服务器。请检查网络后重试。";
 "ai.model.failed.body.storage" = "可用空间不足，无法保存模型。请释放存储空间后重试。";
